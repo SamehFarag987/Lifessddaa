@@ -1,0 +1,3444 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#050507">
+<title>حياة مختلفة</title>
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%D8%AD%D9%8A%D8%A7%D8%A9%20%D9%85%D8%AE%D8%AA%D9%84%D9%81%D8%A9%22%2C%22short_name%22%3A%22%D8%AD%D9%8A%D8%A7%D8%AA%D9%8A%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23050507%22%2C%22theme_color%22%3A%22%23050507%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%3D%2527http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%2527%2520viewBox%3D%25270%25200%2520100%2520100%2527%253E%253Ctext%2520y%3D%2527.9em%2527%2520font-size%3D%252790%2527%253E%25F0%259F%258E%25AF%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22any%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050507;
+    --bg2: #0a0a12;
+    --surface: #11111c;
+    --surface2: #1a1a2a;
+    --surface-glass: rgba(26,26,42,0.6);
+    --accent1: #d4af7a;
+    --accent1-glow: rgba(212,175,122,0.4);
+    --accent2: #8b7fff;
+    --accent2-glow: rgba(139,127,255,0.4);
+    --accent3: #ff6b8a;
+    --accent-success: #4ade80;
+    --text: #f0f0f8;
+    --text-dim: #7878a0;
+    --border: rgba(212,175,122,0.12);
+    --border-bright: rgba(212,175,122,0.25);
+    --shadow-glow: 0 8px 32px rgba(139,127,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139,127,255,0.15), transparent),
+      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(212,175,122,0.08), transparent),
+      radial-gradient(ellipse 60% 50% at 20% 80%, rgba(255,107,138,0.06), transparent);
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Background orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.12;
+    pointer-events: none;
+    animation: drift 12s ease-in-out infinite alternate;
+  }
+  .orb1 { width: 300px; height: 300px; background: var(--accent2); top: -100px; right: -100px; animation-delay: 0s; }
+  .orb2 { width: 250px; height: 250px; background: var(--accent1); bottom: 100px; left: -80px; animation-delay: -4s; }
+  .orb3 { width: 200px; height: 200px; background: var(--accent3); top: 50%; left: 50%; animation-delay: -8s; }
+
+  @keyframes drift {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(30px, 20px) scale(1.1); }
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* App container */
+  .app {
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Pages */
+  .page { display: none; flex-direction: column; min-height: 100vh; animation: fadeIn 0.35s ease; }
+  .page.active { display: flex; }
+
+  /* chat layout handled by #page-chat fixed positioning */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ===== HOME PAGE ===== */
+  .home-header {
+    padding: 60px 28px 20px;
+    position: relative;
+  }
+
+  .greeting {
+    font-size: 13px;
+    color: var(--accent1);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: slideDown 0.6s ease 0.2s forwards;
+  }
+
+  .app-title {
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #fff 0%, var(--accent1) 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    animation: slideDown 0.6s ease 0.35s forwards;
+  }
+
+  .tagline {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-top: 10px;
+    font-weight: 300;
+    opacity: 0;
+    animation: slideDown 0.6s ease 0.5s forwards;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Quote card */
+  .quote-card {
+    margin: 24px 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: slideUp 0.6s ease 0.65s forwards;
+  }
+
+  .quote-card::before {
+    content: '"';
+    position: absolute;
+    top: -10px;
+    right: 16px;
+    font-size: 120px;
+    color: var(--accent1);
+    opacity: 0.08;
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+
+  .quote-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+    font-weight: 300;
+  }
+
+  .quote-author {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--accent1);
+    font-weight: 500;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    margin: 0 28px 28px;
+    opacity: 0;
+    animation: slideUp 0.6s ease 0.8s forwards;
+  }
+
+  .stat-card {
+    flex: 1;
+    background: linear-gradient(135deg, var(--surface), var(--surface2));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 16px 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent1), transparent);
+    opacity: 0.4;
+  }
+
+  .stat-number {
+    font-size: 28px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent1), #f5d4a0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  /* Main nav buttons */
+  .nav-section {
+    flex: 1;
+    padding: 0 28px 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    opacity: 0;
+    animation: slideUp 0.6s ease 0.95s forwards;
+  }
+
+  .nav-btn {
+    background: linear-gradient(135deg, var(--surface), var(--surface2));
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .nav-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    border-radius: 22px;
+  }
+
+  .nav-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    transition: right 0.6s ease;
+  }
+  .nav-btn:hover::after { right: 100%; }
+
+  .nav-btn.chat::before { background: radial-gradient(circle at top right, rgba(139,127,255,0.18), transparent 60%); }
+  .nav-btn.goals::before { background: radial-gradient(circle at top right, rgba(212,175,122,0.18), transparent 60%); }
+  .nav-btn.settings::before { background: radial-gradient(circle at top right, rgba(255,107,138,0.14), transparent 60%); }
+
+  .nav-btn:hover { transform: translateY(-2px); border-color: var(--border-bright); }
+  .nav-btn:hover::before, .nav-btn:active::before { opacity: 1; }
+  .nav-btn:active { transform: scale(0.98); }
+
+  .nav-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .nav-btn:hover .nav-icon { transform: scale(1.08) rotate(-3deg); }
+
+  .nav-btn.chat .nav-icon { background: rgba(139,127,255,0.18); box-shadow: 0 0 24px rgba(139,127,255,0.15); }
+  .nav-btn.goals .nav-icon { background: rgba(212,175,122,0.18); box-shadow: 0 0 24px rgba(212,175,122,0.15); }
+  .nav-btn.settings .nav-icon { background: rgba(255,107,138,0.14); box-shadow: 0 0 24px rgba(255,107,138,0.1); }
+
+  .nav-info { flex: 1; }
+
+  .nav-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .nav-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  .nav-arrow {
+    color: var(--text-dim);
+    font-size: 18px;
+    transition: transform 0.3s ease;
+  }
+  .nav-btn:hover .nav-arrow { transform: translateX(-4px); }
+
+  /* ===== CHAT PAGE — BULLETPROOF MOBILE ===== */
+
+  /* The chat page itself is a fixed full-screen column */
+  #page-chat {
+  display: none;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
+}
+  #page-chat.active { display: flex !important; }
+
+  .chat-header {
+  position: sticky;
+  top: 0;
+  padding: 44px 12px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 99;
+}
+
+  .back-btn {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 20px; color: var(--text);
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .back-btn:active { background: var(--accent2); color: #fff; }
+
+  .chat-title-wrap { flex: 1; min-width: 0; overflow: hidden; }
+  .chat-title { font-size: 16px; font-weight: 700; }
+  .chat-model { font-size: 10px; color: var(--accent2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .chat-status {
+    width: 9px; height: 9px; flex-shrink: 0;
+    background: var(--accent-success);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-success);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+  /* Messages — the ONLY scrollable area */
+  .messages {
+  flex: 1;
+  padding: 10px 10px 100px; /* Padding bottom ensures messages aren't hidden behind the sticky input */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+  .messages::-webkit-scrollbar { display: none; }
+
+  .msg {
+    max-width: 75%;
+    padding: 9px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 400;
+    animation: msgPop 0.2s ease-out;
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+  @keyframes msgPop { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+
+  .msg.ai {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    align-self: flex-start;
+    border-bottom-right-radius: 4px;
+    color: var(--text);
+  }
+  .msg.user {
+    background: linear-gradient(135deg, var(--accent2), #5a4fd0);
+    align-self: flex-end;
+    border-bottom-left-radius: 4px;
+    color: #fff;
+    box-shadow: 0 3px 12px rgba(139,127,255,0.35);
+  }
+  .msg-time { font-size: 10px; color: var(--text-dim); margin-top: 4px; opacity: 0.6; }
+  .msg.user .msg-time { color: rgba(255,255,255,0.6); }
+
+  .typing-indicator {
+    display: none; align-self: flex-start;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; border-bottom-right-radius: 4px;
+    padding: 12px 16px; gap: 5px; align-items: center;
+  }
+  .typing-indicator.show { display: flex; }
+  .dot { width: 6px; height: 6px; background: var(--accent2); border-radius: 50%; opacity: 0.5; animation: bounce 1.2s infinite; }
+  .dot:nth-child(2){animation-delay:.15s;} .dot:nth-child(3){animation-delay:.3s;}
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0);opacity:0.4;} 30%{transform:translateY(-5px);opacity:1;} }
+
+  /* Input bar — always at bottom, never hidden */
+  .chat-input-area {
+  position: sticky !important;
+  bottom: 0 !important;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 8px 8px calc(8px + var(--sab, 0px));
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  z-index: 99;
+  width: 100%;
+}
+
+  .chat-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    resize: none;
+    outline: none;
+    max-height: 90px;
+    min-height: 40px;
+    direction: rtl;
+    line-height: 1.45;
+    transition: border-color 0.2s;
+    display: block;
+  }
+  .chat-input:focus { border-color: var(--accent2); }
+  .chat-input::placeholder { color: var(--text-dim); }
+
+  .send-btn {
+    width: 40px; height: 40px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent2), #5a4fd0);
+    border: none; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; color: #fff;
+    box-shadow: 0 3px 12px rgba(139,127,255,0.45);
+    transition: transform 0.15s;
+  }
+  .send-btn:active { transform: scale(0.88); }
+
+
+
+  /* ===== TOOLS BUTTON (replaces separate attach + dump btns) ===== */
+  .tools-btn {
+    width: 40px; height: 40px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    color: var(--text);
+    position: relative;
+  }
+  .tools-btn:active { transform: scale(0.9); }
+
+  /* ===== MOOD PICKER ===== */
+  .mood-menu {
+    display: none;
+    position: absolute;
+    bottom: 52px;
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    border-radius: 18px;
+    padding: 12px 14px;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    animation: fadeIn 0.15s ease;
+    min-width: 200px;
+  }
+  .mood-menu.open { display: block; }
+  .mood-menu-title {
+    font-size: 11px; color: var(--text-dim);
+    margin-bottom: 10px; text-align: center;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .mood-emojis {
+    display: flex; justify-content: space-between; gap: 4px;
+  }
+  .mood-emoji-btn {
+    flex: 1; padding: 8px 4px;
+    background: transparent; border: 1.5px solid transparent;
+    border-radius: 12px; cursor: pointer;
+    font-size: 22px; text-align: center;
+    transition: all 0.15s;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+  .mood-emoji-btn span { font-size: 9px; color: var(--text-dim); font-family: 'Tajawal', sans-serif; }
+  .mood-emoji-btn:active { transform: scale(0.9); }
+  .mood-emoji-btn.selected { border-color: var(--accent1); background: rgba(212,175,122,0.1); }
+
+  .mood-indicator {
+    font-size: 16px; position: absolute; top: -6px; right: -6px;
+    pointer-events: none;
+  }
+
+
+  .tools-menu {
+    display: none;
+    position: absolute;
+    bottom: 52px;
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    border-radius: 16px;
+    padding: 8px;
+    gap: 6px;
+    flex-direction: column;
+    min-width: 160px;
+    z-index: 200;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    animation: fadeIn 0.15s ease;
+  }
+  .tools-menu.open { display: flex; }
+
+  .tools-menu-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text);
+    transition: background 0.15s;
+    border: none; background: transparent;
+    font-family: 'Tajawal', sans-serif;
+    width: 100%; text-align: right;
+  }
+  .tools-menu-item:active { background: var(--surface2); }
+
+  /* ===== DUMPS LIST PAGE ===== */
+  #page-dumps {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg);
+  }
+  #page-dumps.active { display: flex; }
+
+  .dumps-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: none;
+  }
+
+  .dump-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 16px;
+    position: relative;
+  }
+  .dump-item-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .dump-item-date { font-size: 11px; color: var(--accent-success); font-weight: 500; }
+
+  .dump-item-pin {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: rgba(212,175,122,0.1);
+    border: 1px solid rgba(212,175,122,0.2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px;
+    transition: all 0.15s; margin-left: 6px;
+  }
+  .dump-item-pin:active { transform: scale(0.9); }
+  .dump-item-pin.pinned {
+    background: rgba(212,175,122,0.25);
+    border-color: var(--accent1);
+  }
+  .dump-item.pinned {
+    border-color: rgba(212,175,122,0.4);
+    background: linear-gradient(135deg, var(--surface), rgba(212,175,122,0.05));
+  }
+  .dump-pinned-badge {
+    font-size: 10px; color: var(--accent1);
+    font-weight: 600; letter-spacing: 1px;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 4px;
+  }
+
+  .dump-item-delete {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: rgba(255,107,138,0.1);
+    border: 1px solid rgba(255,107,138,0.2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px; color: var(--accent3);
+    transition: all 0.15s;
+  }
+  .dump-item-delete:active { transform: scale(0.9); }
+  .dump-item-raw {
+    font-size: 13px; color: var(--text-dim); line-height: 1.6;
+    margin-bottom: 10px;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .dump-item-organized {
+    font-size: 13px; color: var(--text); line-height: 1.6;
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 10px 12px;
+    border-right: 3px solid var(--accent-success);
+  }
+  .dump-item-organizing {
+    font-size: 12px; color: var(--text-dim);
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 0;
+  }
+
+  /* ===== BRAIN DUMP PAGE ===== */
+  #page-dump {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg);
+  }
+  #page-dump.active { display: flex; }
+
+  .dump-header {
+    padding: 50px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+  .dump-title-wrap { flex: 1; }
+  .dump-title { font-size: 20px; font-weight: 700; }
+  .dump-subtitle { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+  .dump-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .dump-hint {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 16px;
+  }
+
+  .dump-textarea {
+    flex: 1;
+    min-height: 220px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 16px;
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    resize: none;
+    outline: none;
+    direction: rtl;
+    line-height: 1.7;
+    transition: border-color 0.2s;
+  }
+  .dump-textarea:focus { border-color: var(--accent2); }
+  .dump-textarea::placeholder { color: var(--text-dim); }
+
+  .dump-save-btn {
+    background: linear-gradient(135deg, var(--accent2), #5a4fd0);
+    border: none;
+    border-radius: 18px;
+    padding: 16px;
+    color: #fff;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(139,127,255,0.35);
+  }
+  .dump-save-btn:active { transform: scale(0.97); }
+
+  /* Brain dump nav button on home */
+  .nav-btn.dump::before { background: radial-gradient(circle at top right, rgba(74,222,128,0.15), transparent 60%); }
+  .nav-btn.dump .nav-icon { background: rgba(74,222,128,0.15); box-shadow: 0 0 24px rgba(74,222,128,0.12); }
+
+  /* Dump button in chat input (same style as attach-btn) */
+  .dump-btn {
+    width: 40px; height: 40px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    color: var(--accent-success);
+  }
+  .dump-btn:active { transform: scale(0.9); background: rgba(74,222,128,0.15); }
+
+  /* Dump chip in selected bar */
+  .dump-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(74,222,128,0.12);
+    border: 1px solid rgba(74,222,128,0.25);
+    border-radius: 20px;
+    padding: 4px 10px 4px 6px;
+    font-size: 12px; color: var(--accent-success);
+    white-space: nowrap; max-width: 160px;
+  }
+  .dump-chip-text { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .dump-chip-remove { cursor: pointer; font-size: 14px; opacity: 0.7; flex-shrink: 0; }
+
+  /* Dump picker modal (same base as notes picker) */
+  .dump-picker-modal {
+    width: 100%;
+    max-width: 430px;
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    padding: 12px 20px 32px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .dump-pick-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .dump-pick-item.selected { border-color: var(--accent-success); background: rgba(74,222,128,0.08); }
+  .dump-pick-check {
+    width: 20px; height: 20px; flex-shrink: 0;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+  }
+  .dump-pick-item.selected .dump-pick-check { background: var(--accent-success); border-color: var(--accent-success); color: #000; }
+  .dump-pick-text { font-size: 13px; line-height: 1.5; color: var(--text); flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .dump-pick-date { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+
+  /* ===== GOALS PAGE ===== */
+  .goals-header {
+    padding: 50px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .goals-title-wrap { flex: 1; }
+  .goals-title { font-size: 20px; font-weight: 700; }
+  .goals-count { font-size: 12px; color: var(--accent1); margin-top: 2px; }
+
+  .add-btn {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent1), #a8843e);
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 20px; color: #000;
+    font-weight: 900;
+    transition: all 0.2s;
+  }
+  .add-btn:active { transform: scale(0.9); }
+
+  .goals-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: none;
+  }
+
+  .goal-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    animation: slideUp 0.3s ease;
+  }
+
+  .goal-check {
+    width: 24px; height: 24px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    margin-top: 2px;
+    font-size: 13px;
+  }
+  .goal-check.done { background: var(--accent1); border-color: var(--accent1); color: #000; }
+
+  .goal-content { flex: 1; }
+  .goal-text { font-size: 15px; font-weight: 500; line-height: 1.5; }
+  .goal-text.done { text-decoration: line-through; color: var(--text-dim); }
+  .goal-date { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  .goal-delete {
+    background: none; border: none;
+    color: var(--text-dim); font-size: 16px;
+    cursor: pointer; padding: 2px;
+    transition: color 0.2s;
+  }
+  .goal-delete:hover { color: var(--accent3); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-text { font-size: 15px; font-weight: 300; }
+
+  /* Add goal modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 200;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    overflow-y: auto;
+  }
+  .modal-overlay.show { display: flex; }
+
+  .modal {
+    width: 100%;
+    max-width: 430px;
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    padding: 24px 20px 40px;
+    animation: slideModal 0.35s ease;
+    flex-shrink: 0;
+    margin-top: auto;
+  }
+  @keyframes slideModal { from{transform:translateY(40px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+
+  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+
+  .modal-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    outline: none;
+    direction: rtl;
+    resize: none;
+    min-height: 80px;
+    transition: border-color 0.2s;
+  }
+  .modal-input:focus { border-color: var(--accent1); }
+  .modal-input::placeholder { color: var(--text-dim); }
+
+  .modal-actions { display: flex; gap: 10px; margin-top: 14px; }
+
+  .modal-cancel {
+    flex: 1; padding: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text-dim);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-save {
+    flex: 2; padding: 14px;
+    background: linear-gradient(135deg, var(--accent1), #a8843e);
+    border: none;
+    border-radius: 14px;
+    color: #000;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .modal-save:active { transform: scale(0.97); }
+
+  /* ===== SETTINGS PAGE ===== */
+  .settings-header {
+    padding: 50px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .settings-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px 40px;
+    scrollbar-width: none;
+  }
+
+  .settings-section { margin-bottom: 28px; }
+
+  .settings-section-title {
+    font-size: 11px;
+    color: var(--accent1);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 12px;
+    padding: 0 4px;
+  }
+
+  .settings-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+
+  .settings-row {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .settings-row:last-child { border-bottom: none; }
+
+  .settings-label {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+
+  .settings-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 14px;
+    outline: none;
+    direction: rtl;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+  .settings-input:focus { border-color: var(--accent2); }
+  .settings-input::placeholder { color: var(--text-dim); }
+
+  /* Prompts section */
+  .prompts-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .prompt-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .prompt-item.active-prompt {
+    border-color: var(--accent2);
+    background: rgba(124,111,255,0.08);
+  }
+
+  .prompt-radio {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.2s;
+  }
+  .prompt-radio.active { border-color: var(--accent2); background: var(--accent2); }
+  .prompt-radio.active::after { content:''; width:8px; height:8px; background:#fff; border-radius:50%; }
+
+  .prompt-content { flex: 1; }
+  .prompt-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .prompt-preview { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+
+  .prompt-actions { display: flex; gap: 6px; }
+  .prompt-action-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    transition: all 0.2s;
+  }
+  .prompt-action-btn.del:hover { color: var(--accent3); border-color: var(--accent3); }
+
+  .add-prompt-btn {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    width: 100%;
+    color: var(--accent1);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+  .add-prompt-btn:active { background: var(--surface2); }
+
+  .save-settings-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--accent2), #5a4fcc);
+    border: none;
+    border-radius: 16px;
+    color: #fff;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.2s;
+  }
+  .save-settings-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+  /* Slider */
+  .slider-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+  .slider {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--surface2);
+    outline: none;
+    border: 1px solid var(--border);
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent2);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(124,111,255,0.5);
+  }
+  .slider-val {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent2);
+    min-width: 32px;
+    text-align: center;
+  }
+
+  /* Conversations */
+  .conv-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .conv-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .conv-item.active-conv { border-color: var(--accent2); background: rgba(124,111,255,0.08); }
+  .conv-item:active { transform: scale(0.98); }
+  .conv-icon { font-size: 18px; }
+  .conv-info { flex: 1; }
+  .conv-name { font-size: 14px; font-weight: 600; }
+  .conv-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .conv-del {
+    background: none; border: none;
+    color: var(--text-dim); font-size: 14px;
+    cursor: pointer; padding: 4px;
+    transition: color 0.2s;
+  }
+  .conv-del:hover { color: var(--accent3); }
+  .new-conv-btn {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    width: 100%;
+    color: var(--accent2);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 0.2s;
+  }
+  .new-conv-btn:active { background: var(--surface2); }
+
+  /* Chat conv selector in header */
+  .conv-selector {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-dim);
+    transition: all 0.2s;
+  }
+  .conv-selector:active { background: var(--surface); }
+
+  /* Prompt modal */
+  .prompt-modal {
+    width: 100%;
+    max-width: 430px;
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    padding: 24px 20px 40px;
+    animation: slideModal 0.35s ease;
+    flex-shrink: 0;
+    margin-top: auto;
+  }
+
+  /* Selected notes chips above input */
+  .selected-notes-bar {
+    display: none;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 16px 0;
+    background: var(--surface);
+  }
+  .selected-notes-bar.has-items { display: flex; }
+  .note-chip {
+    background: rgba(200,169,110,0.15);
+    border: 1px solid rgba(200,169,110,0.3);
+    border-radius: 20px;
+    padding: 4px 10px 4px 6px;
+    font-size: 12px;
+    color: var(--accent1);
+    display: flex; align-items: center; gap: 5px;
+    max-width: 180px;
+  }
+  .note-chip-text { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .note-chip-remove { cursor: pointer; font-size: 14px; opacity: 0.7; flex-shrink: 0; }
+
+  /* Attach button */
+  .attach-btn {
+    width: 40px; height: 40px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    color: var(--accent1);
+  }
+  .attach-btn:active { transform: scale(0.9); background: rgba(212,175,122,0.18); }
+
+  /* Notes picker modal */
+  .notes-picker-modal {
+    width: 100%;
+    max-width: 430px;
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    padding: 20px 20px 36px;
+    animation: slideModal 0.35s ease;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    margin-top: auto;
+  }
+  .notes-picker-list {
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+    scrollbar-width: none;
+  }
+  .note-pick-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex; align-items: flex-start; gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .note-pick-item.selected { border-color: var(--accent1); background: rgba(200,169,110,0.1); }
+  .note-pick-check {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 12px; margin-top: 1px;
+    transition: all 0.2s;
+  }
+  .note-pick-item.selected .note-pick-check { background: var(--accent1); border-color: var(--accent1); color: #000; }
+  .note-pick-text { font-size: 14px; line-height: 1.5; flex: 1; }
+  .note-pick-status { font-size: 11px; margin-top: 3px; }
+  .note-pick-status.done { color: var(--accent1); }
+  .note-pick-status.active { color: var(--text-dim); }
+  .notes-picker-done {
+    margin-top: 14px;
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--accent1), #a8843e);
+    border: none;
+    border-radius: 14px;
+    color: #000;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .notes-picker-done:active { transform: scale(0.97); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface);
+    border: 1px solid var(--accent1);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 13px;
+    color: var(--accent1);
+    z-index: 999;
+    transition: transform 0.3s ease;
+    white-space: nowrap;
+    max-width: calc(100% - 40px);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Voice button */
+  .voice-btn {
+    width: 40px; height: 40px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    color: var(--text-dim);
+  }
+  .voice-btn.recording {
+    background: rgba(255,107,138,0.2);
+    border-color: var(--accent3);
+    color: var(--accent3);
+    animation: voicePulse 1s infinite;
+  }
+  @keyframes voicePulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(255,107,138,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(255,107,138,0); }
+  }
+
+  /* Slash command suggestions */
+  .slash-suggestions {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    right: 0; left: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 50;
+    scrollbar-width: none;
+  }
+  .slash-suggestions.show { display: block; }
+  .slash-item {
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .slash-item:last-child { border-bottom: none; }
+  .slash-item:active, .slash-item.highlighted { background: var(--surface2); }
+  .slash-item-name { font-size: 14px; font-weight: 600; color: var(--accent2); }
+  .slash-item-preview { font-size: 12px; color: var(--text-dim); margin-top: 1px; }
+  .slash-badge { font-size: 11px; background: rgba(139,127,255,0.15); color: var(--accent2); padding: 2px 7px; border-radius: 6px; }
+
+  /* Chat with goals btn */
+  .chat-goals-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(212,175,122,0.1);
+    border: 1px solid rgba(212,175,122,0.2);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--accent1);
+    cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .chat-goals-btn:active { transform: scale(0.96); }
+
+  /* Reminder toggle */
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-label { font-size: 14px; }
+  .toggle-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .toggle-switch {
+    width: 44px; height: 26px;
+    background: var(--surface2);
+    border-radius: 13px;
+    position: relative;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-switch.on { background: var(--accent2); border-color: var(--accent2); }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 20px; height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    top: 2px; right: 2px;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .toggle-switch.on::after { transform: translateX(-18px); }
+
+  /* Chat input wrapper for slash suggestions */
+  .chat-input-wrapper {
+    flex: 1;
+    position: relative;
+  }
+
+
+  /* Settings Tabs */
+  .settings-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .settings-tab {
+    flex: 1;
+    padding: 10px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-dim);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 8px 8px 0 0;
+    text-align: center;
+  }
+  .settings-tab.active {
+    color: var(--accent2);
+    border-bottom-color: var(--accent2);
+    background: rgba(139,127,255,0.08);
+  }
+  .settings-tab-content { display: none; }
+  .settings-tab-content.active { display: block; }
+
+  /* App settings buttons */
+  .app-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: right;
+    margin-bottom: 10px;
+  }
+  .app-action-btn:active { transform: scale(0.98); background: var(--surface2); }
+  .app-action-btn .btn-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .app-action-btn .btn-text { flex: 1; }
+  .app-action-btn .btn-title { font-size: 15px; font-weight: 700; }
+  .app-action-btn .btn-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; font-weight: 400; }
+  .app-action-btn.pwa .btn-icon { background: rgba(139,127,255,0.15); }
+  .app-action-btn.export .btn-icon { background: rgba(212,175,122,0.15); }
+  .app-action-btn.import .btn-icon { background: rgba(74,222,128,0.15); }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="app">
+
+  <!-- ===== HOME PAGE ===== -->
+  <div class="page active" id="page-home">
+    <div class="home-header">
+      <div class="greeting">مرحباً بك</div>
+      <div class="app-title">حياة<br>مختلفة</div>
+      <div class="tagline">ابدأ يومك بوعي وهدف</div>
+    </div>
+
+    <div class="quote-card">
+      <div class="quote-text" id="daily-quote">الناجحون لا ينتظرون الوقت المناسب — هم يصنعونه.</div>
+      <div class="quote-author">— اقتباس اليوم</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-number" id="stat-goals">0</div>
+        <div class="stat-label">هدف نشط</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="stat-done">0</div>
+        <div class="stat-label">مكتمل</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="stat-chats">0</div>
+        <div class="stat-label">محادثة</div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-btn chat" onclick="navigate('chat')">
+        <div class="nav-icon">💬</div>
+        <div class="nav-info">
+          <div class="nav-title">دردش</div>
+          <div class="nav-desc">تحدث مع الذكاء الاصطناعي</div>
+        </div>
+        <div class="nav-arrow">‹</div>
+      </div>
+
+      <div class="nav-btn goals" onclick="navigate('goals')">
+        <div class="nav-icon">🎯</div>
+        <div class="nav-info">
+          <div class="nav-title">أهداف</div>
+          <div class="nav-desc">تتبع أهدافك وملاحظاتك</div>
+        </div>
+        <div class="nav-arrow">‹</div>
+      </div>
+
+      <div class="nav-btn dump" onclick="navigate('dump')">
+        <div class="nav-icon">🧠</div>
+        <div class="nav-info">
+          <div class="nav-title">فرّغ دماغك</div>
+          <div class="nav-desc">اكتب كل اللي في بالك</div>
+        </div>
+        <div class="nav-arrow">‹</div>
+      </div>
+
+      <div class="nav-btn" style="border-color:rgba(74,222,128,0.15);" onclick="navigate('dumps')">
+        <div class="nav-icon" style="background:rgba(74,222,128,0.1);">📋</div>
+        <div class="nav-info">
+          <div class="nav-title">Dumps السابقة</div>
+          <div class="nav-desc" id="dumps-nav-desc">عرض وحذف الـ dumps</div>
+        </div>
+        <div class="nav-arrow">‹</div>
+      </div>
+
+      <div class="nav-btn settings" onclick="navigate('settings')">
+        <div class="nav-icon">⚙️</div>
+        <div class="nav-info">
+          <div class="nav-title">إعدادات</div>
+          <div class="nav-desc">خصص تجربتك</div>
+        </div>
+        <div class="nav-arrow">‹</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CHAT PAGE ===== -->
+  <div class="page" id="page-chat">
+    <div class="chat-header">
+      <div class="back-btn" onclick="navigate('home')">›</div>
+      <div class="chat-title-wrap">
+        <div class="chat-title">دردش</div>
+        <div class="chat-model" id="chat-model-label">جاري التحميل...</div>
+      </div>
+      <div class="chat-status"></div>
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="typing-indicator" id="typing">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <div class="selected-notes-bar" id="selected-notes-bar" style="flex-shrink:0;"></div>
+
+    <!-- Quick actions bar -->
+    <div style="display:flex;gap:8px;padding:5px 10px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);" id="chat-quick-actions">
+      <button class="chat-goals-btn" onclick="chatWithGoals()">🎯 تحليل أهدافي</button>
+    </div>
+
+    <div class="chat-input-area" style="position:relative;">
+      <div class="slash-suggestions" id="slash-suggestions"></div>
+      <div style="position:relative;flex-shrink:0;">
+        <button class="tools-btn" onclick="toggleToolsMenu(event)" title="أدوات">⚙️<span class="mood-indicator" id="mood-indicator"></span></button>
+        <div class="tools-menu" id="tools-menu">
+          <button class="tools-menu-item" onclick="openNotesPicker();closeToolsMenu()">📎 أرفق هدف</button>
+          <button class="tools-menu-item" onclick="openDumpPicker();closeToolsMenu()">🧠 أرفق Dump</button>
+          <button class="tools-menu-item" onclick="openMoodPicker(event)">❤️ حالتي النفسية</button>
+          <button class="tools-menu-item" onclick="closeToolsMenu();compressConversation()">🗜️ لخّص المحادثة</button>
+        </div>
+        <!-- Mood picker -->
+        <div class="mood-menu" id="mood-menu">
+          <div class="mood-menu-title">إزيك دلوقتي؟</div>
+          <div class="mood-emojis">
+            <button class="mood-emoji-btn" onclick="selectMood('😔','حزين/متضايق',event)" id="mood-btn-sad">😔<span>متضايق</span></button>
+            <button class="mood-emoji-btn" onclick="selectMood('😰','قلقان/متوتر',event)" id="mood-btn-anxious">😰<span>قلقان</span></button>
+            <button class="mood-emoji-btn" onclick="selectMood('😐','عادي',event)" id="mood-btn-neutral">😐<span>عادي</span></button>
+            <button class="mood-emoji-btn" onclick="selectMood('🙂','كويس',event)" id="mood-btn-good">🙂<span>كويس</span></button>
+            <button class="mood-emoji-btn" onclick="selectMood('😄','ممتاز',event)" id="mood-btn-great">😄<span>ممتاز</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-wrapper">
+        <textarea class="chat-input" id="chat-input" placeholder="اكتب أو / للأوامر..." rows="1"
+          oninput="autoResize(this);handleSlashCommand(this.value)"
+          onkeydown="handleChatKeydown(event)">
+        </textarea>
+      </div>
+      <button class="voice-btn" id="voice-btn" onclick="toggleVoice()" title="صوت">🎤</button>
+      <button class="send-btn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+
+  <!-- ===== BRAIN DUMP PAGE ===== -->
+  <div class="page" id="page-dump">
+    <div class="dump-header">
+      <div class="back-btn" onclick="navigate('home')">›</div>
+      <div class="dump-title-wrap">
+        <div class="dump-title">🧠 فرّغ دماغك</div>
+        <div class="dump-subtitle">اكتب كل اللي في بالك بدون ترتيب</div>
+      </div>
+    </div>
+    <div class="dump-body">
+      <div class="dump-hint">✍️ مش لازم يبقى منظم — اكتب أفكارك ومخاوفك ومهامك وأي حاجة تانية. الـ AI هيرتبها ليك في المحادثة.</div>
+      <textarea class="dump-textarea" id="dump-input" placeholder="ابدأ اكتب هنا... مثلاً: عايز أكمل الشغل بس مش قادر أركز، فاكر إن فيه اجتماع بكره، محتاج أكلم سامح، الفكرة اللي راودتني عن المشروع..."></textarea>
+      <button class="dump-save-btn" onclick="saveDump()">💾 احفظ الـ Dump</button>
+    </div>
+  </div>
+
+
+  <!-- ===== DUMPS LIST PAGE ===== -->
+  <div class="page" id="page-dumps">
+    <div class="dump-header">
+      <div class="back-btn" onclick="navigate('home')">›</div>
+      <div class="dump-title-wrap">
+        <div class="dump-title">🧠 الـ Dumps</div>
+        <div class="dump-subtitle" id="dumps-count-label">جاري التحميل...</div>
+      </div>
+    </div>
+    <div class="dumps-list" id="dumps-list"></div>
+  </div>
+
+  <!-- ===== GOALS PAGE ===== -->
+  <div class="page" id="page-goals">
+    <div class="goals-header">
+      <div class="back-btn" onclick="navigate('home')">›</div>
+      <div class="goals-title-wrap">
+        <div class="goals-title">أهدافي</div>
+        <div class="goals-count" id="goals-count">0 أهداف</div>
+      </div>
+      <button class="add-btn" onclick="openAddGoal()">+</button>
+    </div>
+
+    <div class="goals-list" id="goals-list">
+      <div class="empty-state">
+        <div class="empty-icon">🎯</div>
+        <div class="empty-text">لا يوجد أهداف بعد<br>اضغط + لإضافة هدف جديد</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SETTINGS PAGE ===== -->
+  <div class="page" id="page-settings">
+    <div class="settings-header">
+      <div class="back-btn" onclick="navigate('home')">›</div>
+      <div style="flex:1">
+        <div style="font-size:20px;font-weight:700;">الإعدادات</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:2px;">خصص تجربتك</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="settings-tabs">
+      <button class="settings-tab active" onclick="switchSettingsTab('ai', this)">🤖 الذكاء الاصطناعي</button>
+      <button class="settings-tab" onclick="switchSettingsTab('app', this)">⚙️ التطبيق</button>
+    </div>
+
+    <div class="settings-scroll">
+
+      <!-- TAB: AI SETTINGS -->
+      <div class="settings-tab-content active" id="tab-ai">
+
+        <div class="settings-section">
+          <div class="settings-section-title">الاتصال</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <div class="settings-label">🔑 مفتاح OpenRouter</div>
+              <input type="password" class="settings-input" id="api-key" placeholder="sk-or-..." />
+            </div>
+            <div class="settings-row">
+              <div class="settings-label">🤖 اسم الموديل</div>
+              <input type="text" class="settings-input" id="model-name" placeholder="openai/gpt-4o" />
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">ضبط التفكير</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <div class="settings-label">🌡️ درجة الحرارة &nbsp;<span style="color:var(--text-dim);font-size:11px;">منخفضة = دقيق | مرتفعة = مبدع</span></div>
+              <div class="slider-row">
+                <input type="range" class="slider" id="temperature" min="0" max="2" step="0.1" value="0.7"
+                  oninput="document.getElementById('temp-val').textContent=parseFloat(this.value).toFixed(1)" />
+                <div class="slider-val" id="temp-val">0.7</div>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-label">📜 عدد الرسائل للموديل &nbsp;<span style="color:var(--text-dim);font-size:11px;">أكثر = ذاكرة أطول</span></div>
+              <div class="slider-row">
+                <input type="range" class="slider" id="max-messages" min="2" max="50" step="2" value="10"
+                  oninput="document.getElementById('msg-val').textContent=this.value" />
+                <div class="slider-val" id="msg-val">10</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">المحادثات</div>
+          <div class="conv-list" id="conv-list"></div>
+          <button class="new-conv-btn" onclick="createNewConversation()">
+            <span>+</span> محادثة جديدة
+          </button>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">برومبتات النظام</div>
+          <div class="prompts-list" id="prompts-list"></div>
+          <button class="add-prompt-btn" onclick="openAddPrompt()">
+            <span>+</span> إضافة برومبت جديد
+          </button>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">التذكيرات</div>
+          <div class="settings-card">
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">🔔 تفعيل التذكيرات</div>
+                <div class="toggle-sub">إشعار يومي بتحليل أهدافك</div>
+              </div>
+              <div class="toggle-switch" id="reminder-toggle" onclick="toggleReminder()"></div>
+            </div>
+            <div class="settings-row" id="reminder-time-row" style="display:none;">
+              <div class="settings-label">⏰ وقت التذكير</div>
+              <input type="time" class="settings-input" id="reminder-time" value="09:00" />
+            </div>
+            <div class="settings-row" id="reminder-msg-row" style="display:none;">
+              <div class="settings-label">💬 رسالة التذكير</div>
+              <input type="text" class="settings-input" id="reminder-msg" placeholder="مثال: حان وقت مراجعة أهدافك!" value="حان وقت مراجعة أهدافك! 🎯" />
+            </div>
+          </div>
+        </div>
+
+        <button class="save-settings-btn" onclick="saveSettings()">💾 حفظ إعدادات الذكاء</button>
+
+      </div>
+
+      <!-- TAB: APP SETTINGS -->
+      <div class="settings-tab-content" id="tab-app">
+
+        <div class="settings-section">
+          <div class="settings-section-title">التطبيق</div>
+
+          <button class="app-action-btn pwa" onclick="installPWA()">
+            <div class="btn-icon">📲</div>
+            <div class="btn-text">
+              <div class="btn-title">تثبيت التطبيق</div>
+              <div class="btn-sub">أضف حياة مختلفة لسطح المكتب</div>
+            </div>
+            <div style="color:var(--text-dim);font-size:18px;">‹</div>
+          </button>
+
+          <button class="app-action-btn export" onclick="exportDatabase()">
+            <div class="btn-icon">💾</div>
+            <div class="btn-text">
+              <div class="btn-title">حفظ قاعدة البيانات</div>
+              <div class="btn-sub">تصدير كل بياناتك كملف JSON</div>
+            </div>
+            <div style="color:var(--text-dim);font-size:18px;">‹</div>
+          </button>
+
+          <button class="app-action-btn import" onclick="document.getElementById('import-file').click()">
+            <div class="btn-icon">📂</div>
+            <div class="btn-text">
+              <div class="btn-title">استرداد قاعدة البيانات</div>
+              <div class="btn-sub">استيراد نسخة احتياطية سابقة</div>
+            </div>
+            <div style="color:var(--text-dim);font-size:18px;">‹</div>
+          </button>
+          <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importDatabase(event)" />
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">معلومات</div>
+          <div class="settings-card">
+            <div class="settings-row" style="flex-direction:row;justify-content:space-between;align-items:center;">
+              <div class="settings-label" style="margin:0;">الإصدار</div>
+              <div style="font-size:13px;color:var(--accent1);font-weight:600;">v2.0</div>
+            </div>
+            <div class="settings-row" style="flex-direction:row;justify-content:space-between;align-items:center;border:none;">
+              <div class="settings-label" style="margin:0;">حجم البيانات</div>
+              <div id="db-size" style="font-size:13px;color:var(--text-dim);">—</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end .app -->
+
+<!-- Goal Modal -->
+<div class="modal-overlay" id="goal-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">هدف جديد</div>
+    <textarea class="modal-input" id="goal-input" placeholder="اكتب هدفك هنا..."></textarea>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeGoalModal()">إلغاء</button>
+      <button class="modal-save" onclick="saveGoal()">إضافة الهدف</button>
+    </div>
+  </div>
+</div>
+
+<!-- Prompt Modal -->
+<div class="modal-overlay" id="prompt-modal">
+  <div class="prompt-modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">برومبت جديد</div>
+    <input type="text" class="settings-input" id="prompt-name-input" placeholder="اسم البرومبت (مثال: معلم، صديق...)" style="margin-bottom:10px;" />
+    <textarea class="modal-input" id="prompt-text-input" placeholder="اكتب نص البرومبت هنا..." style="min-height:120px;"></textarea>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closePromptModal()">إلغاء</button>
+      <button class="modal-save" onclick="savePrompt()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Notes Picker Modal -->
+<div class="modal-overlay" id="notes-picker-modal">
+  <div class="notes-picker-modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📎 اختر ملاحظات ترسلها</div>
+    <div class="notes-picker-list" id="notes-picker-list"></div>
+    <button class="notes-picker-done" onclick="confirmNotesPicker()">تأكيد الاختيار</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="dump-picker-modal">
+  <div class="dump-picker-modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🧠 اختر Brain Dump ترسله</div>
+    <div id="dump-picker-list"></div>
+    <button class="notes-picker-done" onclick="confirmDumpPicker()">تأكيد الاختيار</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== MOBILE KEYBOARD FIX =====
+// When keyboard appears, scroll focused input into view inside modal
+document.addEventListener('focusin', function(e) {
+  if (e.target.matches('.modal-input, .settings-input, #prompt-name-input, #prompt-text-input')) {
+    setTimeout(() => {
+      e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 350);
+  }
+});
+
+// ===== HAPTIC FEEDBACK =====
+function haptic(type = 'light') {
+  if (!navigator.vibrate) return;
+  const patterns = { light: 10, medium: 20, heavy: [30,20,30], success: [10,40,10] };
+  navigator.vibrate(patterns[type] || 10);
+}
+
+// ===== STATE =====
+let state = {
+  goals: [],
+  dumps: [],
+  settings: {
+    apiKey: '',
+    model: 'openai/gpt-4o',
+    temperature: 0.7,
+    maxMessages: 10,
+    prompts: [],
+    activePromptIds: []
+  },
+  conversations: [],
+  activeConvId: null,
+  chatCount: 0
+};
+
+let selectedNoteIds = []; // temp selection in picker
+let attachedNoteIds = []; // confirmed attached notes
+let attachedDumpIds = []; // confirmed attached dumps
+let selectedDumpIds = []; // temp selection in dump picker
+let editingGoalId = null; // track goal being edited
+let editingPromptId = null; // track prompt being edited
+
+// ===== QUOTES =====
+const quotes = [
+  "الناجحون لا ينتظرون الوقت المناسب — هم يصنعونه.",
+  "كل يوم هو فرصة جديدة لتكون نسخة أفضل من نفسك.",
+  "الانضباط يفعل ما لا تستطيع الدوافع وحدها فعله.",
+  "حياتك لا تتحسن بالصدفة — تتحسن بالقرار.",
+  "ابدأ الآن، أتقن لاحقاً.",
+];
+
+// ===== INIT =====
+function init() {
+  loadFromStorage();
+  // Ensure at least one conversation exists
+  if (!state.conversations || state.conversations.length === 0) {
+    state.conversations = [];
+    createNewConversation(true);
+  }
+  if (!state.activeConvId && state.conversations.length > 0) {
+    state.activeConvId = state.conversations[0].id;
+  }
+  document.getElementById('daily-quote').textContent = quotes[new Date().getDay() % quotes.length];
+  updateStats();
+  renderGoals();
+  renderPrompts();
+  renderConversations();
+  loadSettingsUI();
+  setupChatKeyboardHandling();
+  updateReminderUI();
+  if (state.settings.reminderEnabled) scheduleReminder();
+}
+
+// ===== STORAGE =====
+function loadFromStorage() {
+  try {
+    const saved = localStorage.getItem('hayah_state');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      state = { ...state, ...parsed };
+      // Migration: old activePromptId (single) → activePromptIds (array)
+      if (state.settings) {
+        if (!Array.isArray(state.settings.activePromptIds)) {
+          state.settings.activePromptIds = state.settings.activePromptId
+            ? [state.settings.activePromptId]
+            : [];
+        }
+        delete state.settings.activePromptId;
+      }
+    }
+  } catch(e) {}
+}
+
+function saveToStorage() {
+  localStorage.setItem('hayah_state', JSON.stringify(state));
+}
+
+// ===== NAVIGATION =====
+function navigate(page) {
+  haptic('light');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  if (page === 'chat') {
+    updateChatModelLabel();
+    loadActiveConversationIntoChat();
+  }
+  if (page === 'dumps') {
+    renderDumpsList();
+  }
+}
+
+function loadActiveConversationIntoChat() {
+  const conv = getActiveConv();
+  const msgs = document.getElementById('messages');
+  if (!msgs) return;
+  // Only re-render if currently empty or stale
+  if (msgs.children.length === 0) {
+    if (!conv || conv.messages.length === 0) {
+      addMessage('أهلاً! أنا هنا عشانك. إيه اللي في بالك؟ 😊', 'ai', 'الآن');
+    } else {
+      conv.messages.forEach(m => {
+        addMessage(m.content, m.role === 'user' ? 'user' : 'ai', m.time);
+      });
+    }
+    scrollMessages(false);
+  }
+}
+
+// ===== STATS =====
+function updateStats() {
+  const active = state.goals.filter(g => !g.done).length;
+  const done = state.goals.filter(g => g.done).length;
+  document.getElementById('stat-goals').textContent = active;
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-chats').textContent = state.chatCount;
+}
+
+// ===== NOTES PICKER =====
+function openNotesPicker() {
+  const activeGoals = state.goals.filter(g => !g.done);
+  if (activeGoals.length === 0) {
+    showToast('📝 مفيش ملاحظات نشطة');
+    return;
+  }
+  selectedNoteIds = [...attachedNoteIds];
+  renderNotesPicker();
+  document.getElementById('notes-picker-modal').classList.add('show');
+}
+
+function renderNotesPicker() {
+  const list = document.getElementById('notes-picker-list');
+  const activeGoals = state.goals.filter(g => !g.done);
+  list.innerHTML = activeGoals.map(g => `
+    <div class="note-pick-item ${selectedNoteIds.includes(g.id) ? 'selected' : ''}"
+      onclick="toggleNotePick(${g.id})">
+      <div class="note-pick-check">${selectedNoteIds.includes(g.id) ? '✓' : ''}</div>
+      <div style="flex:1">
+        <div class="note-pick-text">${g.text}</div>
+        <div class="note-pick-status active">🔵 نشط</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleNotePick(id) {
+  if (selectedNoteIds.includes(id)) {
+    selectedNoteIds = selectedNoteIds.filter(x => x !== id);
+  } else {
+    selectedNoteIds.push(id);
+  }
+  renderNotesPicker();
+}
+
+function confirmNotesPicker() {
+  attachedNoteIds = [...selectedNoteIds];
+  renderAttachedChips();
+  document.getElementById('notes-picker-modal').classList.remove('show');
+  if (attachedNoteIds.length > 0) showToast(`📎 تم إرفاق ${attachedNoteIds.length} ملاحظة`);
+}
+
+function removeAttachedNote(id) {
+  attachedNoteIds = attachedNoteIds.filter(x => x !== id);
+  renderAttachedChips();
+}
+
+function renderAllChips() {
+  const bar = document.getElementById('selected-notes-bar');
+  const noteChips = attachedNoteIds.map(id => {
+    const g = state.goals.find(g => g.id === id);
+    if (!g) return '';
+    const short = g.text.length > 25 ? g.text.substring(0, 25) + '...' : g.text;
+    return `<div class="note-chip"><span class="note-chip-text">📎 ${short}</span><span class="note-chip-remove" onclick="removeAttachedNote(${id})">✕</span></div>`;
+  }).join('');
+  const dumpChips = attachedDumpIds.map(id => {
+    const d = state.dumps.find(d => d.id === id);
+    if (!d) return '';
+    const short = d.text.length > 25 ? d.text.substring(0, 25) + '...' : d.text;
+    return `<div class="dump-chip"><span class="dump-chip-text">🧠 ${short}</span><span class="dump-chip-remove" onclick="removeAttachedDump(${id})">✕</span></div>`;
+  }).join('');
+  bar.innerHTML = noteChips + dumpChips;
+  bar.classList.toggle('has-items', bar.innerHTML.trim() !== '');
+}
+// aliases for backward compat
+function renderAttachedChips() { renderAllChips(); }
+
+// close notes picker on overlay click
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('notes-picker-modal').addEventListener('click', function(e) {
+    if (e.target === this) { document.getElementById('notes-picker-modal').classList.remove('show'); }
+  });
+  document.getElementById('dump-picker-modal').addEventListener('click', function(e) {
+    if (e.target === this) { document.getElementById('dump-picker-modal').classList.remove('show'); }
+  });
+});
+
+
+// ===== BRAIN DUMP =====
+function navigate_to_dump() {
+  document.getElementById('dump-input').value = '';
+  navigate('dump');
+}
+
+
+
+// ===== MOOD =====
+let currentMood = null; // { emoji, label }
+
+function openMoodPicker(e) {
+  if (e) e.stopPropagation();
+  // close tools menu first
+  document.getElementById('tools-menu').classList.remove('open');
+  const menu = document.getElementById('mood-menu');
+  menu.classList.toggle('open');
+}
+
+function selectMood(emoji, label, e) {
+  if (e) e.stopPropagation();
+  currentMood = { emoji, label };
+  document.getElementById('mood-menu').classList.remove('open');
+  document.getElementById('mood-indicator').textContent = emoji;
+  showToast(`${emoji} حالتك: ${label}`);
+  haptic('light');
+}
+
+function closeMoodPicker() {
+  document.getElementById('mood-menu')?.classList.remove('open');
+}
+
+
+// ===== CONVERSATION COMPRESSION =====
+async function compressConversation() {
+  const conv = getActiveConv();
+  if (!conv || conv.messages.length < 4) {
+    showToast('💬 المحادثة قصيرة مش محتاجة ضغط');
+    return;
+  }
+
+  const { apiKey, model } = state.settings;
+  if (!apiKey) { showToast('⚠️ أضف مفتاح API أولاً'); return; }
+
+  showToast('⏳ جاري تلخيص المحادثة...');
+
+  const fullConv = conv.messages.map(m =>
+    (m.role === 'user' ? 'المستخدم: ' : 'المساعد: ') + m.content
+  ).join('\n\n');
+
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://hayah-mokhtalefa.app',
+        'X-Title': 'Hayah Mokhtalefa'
+      },
+      body: JSON.stringify({
+        model: model || 'openai/gpt-4o',
+        temperature: 0.3,
+        messages: [
+          {
+            role: 'system',
+            content: 'أنت مساعد ذكي. لخّص المحادثة التالية في نقاط مركزة: المواضيع اللي اتناقشت، القرارات أو الأفكار المهمة، والسياق اللي محتاج يفضل موجود. كن موجزاً ومفيداً. رد بالعربي فقط.'
+          },
+          { role: 'user', content: fullConv }
+        ]
+      })
+    });
+
+    const data = await res.json();
+    if (!data.choices?.[0]) { showToast('❌ فشل التلخيص'); return; }
+
+    const summary = data.choices[0].message.content;
+    const now = new Date();
+
+    // احفظ الملخص كـ dump
+    const dump = {
+      id: Date.now(),
+      text: '[ملخص محادثة - ' + now.toLocaleDateString('ar') + ']\n' + summary,
+      organized: summary,
+      createdAt: now.toLocaleDateString('ar'),
+      createdTime: now.toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' })
+    };
+    state.dumps.unshift(dump);
+
+    // امسح رسائل المحادثة الحالية وابدأ من الصفر مع الملخص كأول رسالة
+    conv.messages = [];
+    const summaryMsg = '[سياق المحادثة السابقة]\n' + summary;
+    const time = now.toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' });
+    conv.messages.push({ role: 'user', content: summaryMsg, time });
+    conv.messages.push({ role: 'assistant', content: 'تمام، استوعبت كل اللي اتكلمنا فيه. إيه اللي عايز تكمل فيه؟', time });
+
+    saveToStorage();
+
+    // إعادة رسم الـ chat
+    const msgs = document.getElementById('messages');
+    msgs.innerHTML = '';
+    addMessage('🗜️ تم تلخيص المحادثة وحفظها كـ Dump', 'ai', time);
+    addMessage('إيه اللي عايز تكمل فيه؟', 'ai', time);
+    scrollMessages(false, true);
+
+    showToast('✅ تم الضغط! المحادثة بدأت من الصفر');
+  } catch(e) {
+    showToast('❌ خطأ: ' + e.message);
+  }
+}
+
+// ===== TOOLS MENU =====
+function toggleToolsMenu(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('tools-menu');
+  menu.classList.toggle('open');
+}
+function closeToolsMenu() {
+  document.getElementById('tools-menu')?.classList.remove('open');
+}
+document.addEventListener('click', () => {
+  closeToolsMenu();
+  closeMoodPicker();
+});
+
+// ===== BRAIN DUMP =====
+async function saveDump() {
+  const text = document.getElementById('dump-input').value.trim();
+  if (!text) { showToast('✍️ اكتب حاجة الأول'); return; }
+
+  const { apiKey, model, temperature } = state.settings;
+
+  haptic('success');
+  const dump = {
+    id: Date.now(),
+    text,
+    organized: null,
+    createdAt: new Date().toLocaleDateString('ar'),
+    createdTime: new Date().toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' })
+  };
+  state.dumps.unshift(dump);
+  saveToStorage();
+  document.getElementById('dump-input').value = '';
+  showToast('✅ تم الحفظ — جاري التنظيم...');
+  navigate('home');
+
+  // بعت للـ AI يرتب في الخلفية لو في API key
+  if (!apiKey) return;
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://hayah-mokhtalefa.app',
+        'X-Title': 'Hayah Mokhtalefa'
+      },
+      body: JSON.stringify({
+        model: model || 'openai/gpt-4o',
+        temperature: 0.3,
+        messages: [
+          { role: 'system', content: 'أنت مساعد ذكي. المستخدم كتب تفريغ ذهني خام. رتبه في نقاط واضحة مقسمة لـ: مهام، أفكار، مخاوف، أسئلة. كن موجزاً. رد بالعربي فقط.' },
+          { role: 'user', content: text }
+        ]
+      })
+    });
+    const data = await res.json();
+    if (data.choices?.[0]) {
+      // update the dump in state with organized version
+      const idx = state.dumps.findIndex(d => d.id === dump.id);
+      if (idx !== -1) {
+        state.dumps[idx].organized = data.choices[0].message.content;
+        saveToStorage();
+        showToast('🧠 تم تنظيم الـ Dump!');
+      }
+    }
+  } catch(e) { /* silent fail - الـ dump اتحفظ خام */ }
+}
+
+// ===== DUMPS LIST =====
+function renderDumpsList() {
+  const list = document.getElementById('dumps-list');
+  const label = document.getElementById('dumps-count-label');
+  if (!list) return;
+  if (!state.dumps || state.dumps.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🧠</div><div class="empty-text">مفيش dumps بعد</div></div>';
+    if (label) label.textContent = '0 dump';
+    return;
+  }
+  if (label) label.textContent = state.dumps.length + ' dump';
+  list.innerHTML = state.dumps.map(d => `
+    <div class="dump-item ${d.pinned ? 'pinned' : ''}" id="dump-item-${d.id}">
+      ${d.pinned ? '<div class="dump-pinned-badge">📌 معلّم — بيتبعت في كل المحادثات</div>' : ''}
+      <div class="dump-item-header">
+        <span class="dump-item-date">🕐 ${d.createdAt} ${d.createdTime || ''}</span>
+        <div style="display:flex;gap:4px;">
+          <div class="dump-item-pin ${d.pinned ? 'pinned' : ''}" onclick="togglePinDump(${d.id}, event)" title="${d.pinned ? 'إلغاء التعليم' : 'علّم في كل المحادثات'}">📌</div>
+          <div class="dump-item-delete" onclick="deleteDump(${d.id})">🗑</div>
+        </div>
+      </div>
+      <div class="dump-item-raw">${d.text}</div>
+      ${d.organized
+        ? `<div class="dump-item-organized">${d.organized.replace(/\n/g, '<br>')}</div>`
+        : `<div class="dump-item-organizing">⏳ جاري التنظيم...</div>`
+      }
+    </div>
+  `).join('');
+
+  // Update nav desc
+  const desc = document.getElementById('dumps-nav-desc');
+  if (desc) desc.textContent = state.dumps.length + ' dump محفوظ';
+}
+
+
+function togglePinDump(id, e) {
+  if (e) e.stopPropagation();
+  const idx = state.dumps.findIndex(d => d.id === id);
+  if (idx === -1) return;
+  state.dumps[idx].pinned = !state.dumps[idx].pinned;
+  saveToStorage();
+  renderDumpsList();
+  const isPinned = state.dumps[idx].pinned;
+  showToast(isPinned ? '📌 هيتبعت في كل المحادثات' : '📌 تم إلغاء التعليم');
+  haptic('light');
+}
+
+function getPinnedDumpsContext() {
+  if (!state.dumps) return '';
+  const pinned = state.dumps.filter(d => d.pinned);
+  if (pinned.length === 0) return '';
+  return pinned.map(d => d.organized || d.text).join('\n\n');
+}
+
+function deleteDump(id) {
+  haptic('medium');
+  state.dumps = state.dumps.filter(d => d.id !== id);
+  saveToStorage();
+  renderDumpsList();
+  showToast('🗑️ تم حذف الـ Dump');
+}
+
+
+
+// Dump picker (same pattern as notes picker)
+function openDumpPicker() {
+  if (!state.dumps || state.dumps.length === 0) {
+    showToast('🧠 مفيش dumps محفوظة');
+    return;
+  }
+  selectedDumpIds = [...attachedDumpIds];
+  renderDumpPicker();
+  document.getElementById('dump-picker-modal').classList.add('show');
+}
+
+function renderDumpPicker() {
+  const list = document.getElementById('dump-picker-list');
+  list.innerHTML = state.dumps.map(d => {
+    const short = d.text.length > 120 ? d.text.substring(0, 120) + '...' : d.text;
+    const sel = selectedDumpIds.includes(d.id);
+    return `<div class="dump-pick-item ${sel ? 'selected' : ''}" onclick="toggleDumpPick(${d.id})">
+      <div class="dump-pick-check">${sel ? '✓' : ''}</div>
+      <div style="flex:1">
+        <div class="dump-pick-text">${short}</div>
+        <div class="dump-pick-date">${d.createdAt} ${d.createdTime || ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleDumpPick(id) {
+  if (selectedDumpIds.includes(id)) {
+    selectedDumpIds = selectedDumpIds.filter(x => x !== id);
+  } else {
+    selectedDumpIds.push(id);
+  }
+  renderDumpPicker();
+}
+
+function confirmDumpPicker() {
+  attachedDumpIds = [...selectedDumpIds];
+  renderAttachedDumpChips();
+  document.getElementById('dump-picker-modal').classList.remove('show');
+  if (attachedDumpIds.length > 0) showToast(`🧠 تم إرفاق ${attachedDumpIds.length} dump`);
+}
+
+function removeAttachedDump(id) {
+  attachedDumpIds = attachedDumpIds.filter(x => x !== id);
+  renderAttachedDumpChips();
+}
+
+function renderAttachedDumpChips() { renderAllChips(); }
+
+// ===== CONVERSATIONS =====
+function getActiveConv() {
+  return state.conversations.find(c => c.id === state.activeConvId) || null;
+}
+
+function createNewConversation(silent = false) {
+  const conv = {
+    id: Date.now(),
+    name: 'محادثة ' + (state.conversations.length + 1),
+    messages: [],
+    createdAt: new Date().toLocaleDateString('ar')
+  };
+  state.conversations.unshift(conv);
+  state.activeConvId = conv.id;
+  saveToStorage();
+  renderConversations();
+  // Clear chat UI
+  const msgs = document.getElementById('messages');
+  if (msgs) {
+    msgs.innerHTML = '';
+    addMessage('أهلاً! أنا هنا عشانك. إيه اللي في بالك؟ 😊', 'ai', 'الآن');
+  }
+  updateChatModelLabel();
+  if (!silent) {
+    navigate('chat');
+    showToast('💬 محادثة جديدة');
+  }
+}
+
+function switchConversation(id) {
+  state.activeConvId = id;
+  saveToStorage();
+  renderConversations();
+  // Re-render messages using addMessage for consistency
+  const conv = getActiveConv();
+  const msgs = document.getElementById('messages');
+  msgs.innerHTML = '';
+  if (!conv || conv.messages.length === 0) {
+    addMessage('أهلاً! أنا هنا عشانك. إيه اللي في بالك؟ 😊', 'ai', 'الآن');
+  } else {
+    conv.messages.forEach(m => {
+      addMessage(m.content, m.role === 'user' ? 'user' : 'ai', m.time);
+    });
+  }
+  scrollMessages(false);
+  navigate('chat');
+}
+
+function deleteConversation(id) {
+  state.conversations = state.conversations.filter(c => c.id !== id);
+  if (state.activeConvId === id) {
+    state.activeConvId = state.conversations[0]?.id || null;
+    if (!state.activeConvId) createNewConversation(true);
+  }
+  saveToStorage();
+  renderConversations();
+  showToast('🗑️ تم حذف المحادثة');
+}
+
+function renderConversations() {
+  const list = document.getElementById('conv-list');
+  if (!list) return;
+  if (state.conversations.length === 0) {
+    list.innerHTML = '';
+    return;
+  }
+  list.innerHTML = state.conversations.map(c => `
+    <div class="conv-item ${c.id === state.activeConvId ? 'active-conv' : ''}" onclick="switchConversation(${c.id})">
+      <div class="conv-icon">💬</div>
+      <div class="conv-info">
+        <div class="conv-name">${c.name}</div>
+        <div class="conv-meta">${c.messages.length} رسالة • ${c.createdAt}</div>
+      </div>
+      <button class="conv-del" onclick="event.stopPropagation();deleteConversation(${c.id})">✕</button>
+    </div>
+  `).join('');
+}
+
+// ===== CHAT =====
+function updateChatModelLabel() {
+  const model = state.settings.model || 'غير محدد';
+  const el = document.getElementById('chat-model-label');
+  if (!el) return;
+  const activeIds = state.settings.activePromptIds || [];
+  if (activeIds.length > 0) {
+    el.innerHTML = `${model} <span style="color:var(--accent1);margin-right:4px;">• ${activeIds.length} برومبت</span>`;
+  } else {
+    el.innerHTML = `${model} <span style="color:var(--text-dim);margin-right:4px;">• بدون برومبت</span>`;
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  haptic('light');
+
+  const { apiKey, model, prompts, activePromptIds, temperature, maxMessages } = state.settings;
+
+  if (!apiKey) {
+    showToast('⚠️ أضف مفتاح API في الإعدادات أولاً');
+    return;
+  }
+
+  // Ensure active conversation
+  if (!state.activeConvId) createNewConversation(true);
+  const conv = getActiveConv();
+
+  const now = new Date().toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' });
+
+  // Build final message text with attached notes + dumps
+  let finalText = text;
+  if (attachedNoteIds.length > 0) {
+    const notesContext = attachedNoteIds.map(id => {
+      const g = state.goals.find(g => g.id === id);
+      return g ? `- ${g.text} [${g.done ? 'مكتمل' : 'نشط'}]` : null;
+    }).filter(Boolean).join('\n');
+    finalText = `${finalText}\n\n---\n📎 أهدافي المرفقة:\n${notesContext}`;
+  }
+  if (attachedDumpIds.length > 0) {
+    const dumpsContext = attachedDumpIds.map(id => {
+      const d = state.dumps.find(d => d.id === id);
+      return d ? `[${d.createdAt}]\n${d.text}` : null;
+    }).filter(Boolean).join('\n\n');
+    finalText = `${finalText}\n\n---\n[BRAIN_DUMP] ده مش هدف — ده تفريغ ذهني خام. رتبه وساعدني أفهم اللي في دماغي:\n${dumpsContext}`;
+  }
+
+  // Add user message to UI (show clean text) and state (send full text with context)
+  addMessage(text, 'user', now, attachedNoteIds.length > 0 ? attachedNoteIds : null);
+  conv.messages.push({ role: 'user', content: finalText, time: now });
+  state.chatCount++;
+  input.value = '';
+  input.style.height = 'auto';
+
+  // Clear attached notes and dumps after sending
+  attachedNoteIds = [];
+  selectedNoteIds = [];
+  renderAttachedChips();
+  attachedDumpIds = [];
+  selectedDumpIds = [];
+  renderAttachedDumpChips();
+
+  // Show typing
+  const typing = document.getElementById('typing');
+  typing.classList.add('show');
+  scrollMessages();
+
+  // Get active prompt
+  // Build system prompt from all active prompts (in order they were selected)
+  let systemPrompt = 'أنت مساعد ذكي ومفيد.';
+  const pinnedCtx = getPinnedDumpsContext();
+  if (pinnedCtx) {
+    systemPrompt += '\n\n[سياق ثابت عن المستخدم — اقرأه دايماً]:\n' + pinnedCtx;
+  }
+  if (currentMood) {
+    systemPrompt += `\n\n[الحالة النفسية للمستخدم دلوقتي: ${currentMood.emoji} ${currentMood.label}] — خذها في الاعتبار في أسلوب ردك وتعاملك معاه.`;
+  }
+  const activeIds = activePromptIds || [];
+  if (activeIds.length > 0) {
+    const activeTexts = activeIds
+      .map(id => prompts.find(p => p.id === id))
+      .filter(Boolean)
+      .map(p => p.text);
+    if (activeTexts.length > 0) {
+      systemPrompt = activeTexts.join('\n\n---\n\n');
+    }
+  }
+
+  // Build messages with maxMessages limit
+  const limit = maxMessages || 10;
+  const allMsgs = conv.messages.map(m => ({ role: m.role, content: m.content }));
+  const trimmed = allMsgs.slice(-limit);
+
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://hayah-mokhtalefa.app',
+        'X-Title': 'Hayah Mokhtalefa'
+      },
+      body: JSON.stringify({
+        model: model || 'openai/gpt-4o',
+        temperature: temperature ?? 0.7,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...trimmed
+        ]
+      })
+    });
+
+    const data = await res.json();
+    typing.classList.remove('show');
+
+    if (data.choices && data.choices[0]) {
+      const reply = data.choices[0].message.content;
+      const replyTime = new Date().toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' });
+      conv.messages.push({ role: 'assistant', content: reply, time: replyTime });
+      addMessage(reply, 'ai', replyTime);
+    } else if (data.error) {
+      addMessage(`خطأ: ${data.error.message || 'استجابة غير متوقعة'}`, 'ai', now);
+    } else {
+      addMessage('حدث خطأ في الاستجابة.', 'ai', now);
+    }
+  } catch(e) {
+    typing.classList.remove('show');
+    addMessage(`تعذر الاتصال: ${e.message}`, 'ai', now);
+  }
+
+  renderConversations();
+  updateStats();
+  saveToStorage();
+}
+
+function saveMessageAsNote(text) {
+  haptic('success');
+  state.goals.unshift({
+    id: Date.now(),
+    text: text,
+    done: false,
+    date: new Date().toLocaleDateString('ar')
+  });
+  saveToStorage();
+  updateStats();
+  showToast('📝 تم حفظ الرسالة في الملاحظات');
+}
+
+// Simple markdown rendering: **bold**, *italic*, `code`, line breaks
+function renderMarkdown(text) {
+  // Escape HTML first
+  let html = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  // Code blocks ```...```
+  html = html.replace(/```([\s\S]*?)```/g, '<pre style="background:rgba(0,0,0,0.3);padding:10px 12px;border-radius:8px;overflow-x:auto;margin:6px 0;font-size:13px;font-family:monospace;direction:ltr;text-align:left;">$1</pre>');
+  // Inline code `...`
+  html = html.replace(/`([^`]+)`/g, '<code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;font-family:monospace;font-size:0.9em;">$1</code>');
+  // Bold **...**
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // Italic *...*
+  html = html.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  // Line breaks
+  html = html.replace(/\n/g, '<br>');
+  return html;
+}
+
+function copyMessageText(btn) {
+  const text = btn.closest('.msg').dataset.content;
+  navigator.clipboard.writeText(text).then(() => {
+    haptic('light');
+    showToast('📋 تم النسخ');
+  });
+}
+
+function addMessage(text, type, time, noteIds) {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = `msg ${type}`;
+  div.dataset.content = text;
+
+  const notesBadge = (noteIds && noteIds.length > 0)
+    ? `<div style="font-size:11px;color:rgba(255,255,255,0.65);margin-bottom:6px;display:flex;align-items:center;gap:4px;">📎 ${noteIds.length} ملاحظة مرفقة</div>`
+    : '';
+
+  const actions = type === 'ai'
+    ? `<div style="display:flex;gap:8px;margin-top:8px;">
+        <button onclick="saveMessageAsNote(this.closest('.msg').dataset.content)" title="حفظ" style="background:none;border:none;padding:2px;font-size:14px;color:var(--text-dim);cursor:pointer;opacity:0.6;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">📝</button>
+        <button onclick="copyMessageText(this)" title="نسخ" style="background:none;border:none;padding:2px;font-size:14px;color:var(--text-dim);cursor:pointer;opacity:0.6;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">📋</button>
+       </div>`
+    : '';
+
+  const rendered = type === 'ai' ? renderMarkdown(text) : text;
+  div.innerHTML = `${notesBadge}<div>${rendered}</div><div class="msg-time">${time || ''}</div>${actions}`;
+  msgs.appendChild(div);
+  scrollMessages(true, true);
+}
+
+// بيتحقق لو المستخدم في آخر المحادثة (threshold 80px)
+function isNearBottom() {
+  return (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 80;
+}
+
+// بيعمل scroll للأسفل بس لو المستخدم مش بيقرأ فوق
+function scrollMessages(smooth = true, force = false) {
+  if (!force && !isNearBottom()) return;
+  requestAnimationFrame(() => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: smooth ? 'smooth' : 'auto'
+    });
+  });
+}
+
+// Keep chat scrolled to bottom when keyboard opens
+function setupChatKeyboardHandling() {
+  const chatInput = document.getElementById('chat-input');
+  if (!chatInput) return;
+
+  chatInput.addEventListener('focus', () => {
+    setTimeout(() => scrollMessages(true), 300);
+  });
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      const chatPage = document.getElementById('page-chat');
+      if (chatPage && chatPage.classList.contains('active')) {
+        scrollMessages(false);
+      }
+    });
+  }
+}
+
+// ===== GOALS =====
+function openAddGoal() {
+  editingGoalId = null;
+  document.querySelector('#goal-modal .modal-title').textContent = 'هدف جديد';
+  document.querySelector('#goal-modal .modal-save').textContent = 'إضافة الهدف';
+  document.getElementById('goal-input').value = '';
+  document.getElementById('goal-modal').classList.add('show');
+  setTimeout(() => document.getElementById('goal-input').focus(), 300);
+}
+
+function openEditGoal(id) {
+  const goal = state.goals.find(g => g.id === id);
+  if (!goal) return;
+  haptic('light');
+  editingGoalId = id;
+  document.querySelector('#goal-modal .modal-title').textContent = 'تعديل الهدف';
+  document.querySelector('#goal-modal .modal-save').textContent = 'حفظ التعديل';
+  document.getElementById('goal-input').value = goal.text;
+  document.getElementById('goal-modal').classList.add('show');
+  setTimeout(() => document.getElementById('goal-input').focus(), 300);
+}
+
+function closeGoalModal() {
+  document.getElementById('goal-modal').classList.remove('show');
+  document.getElementById('goal-input').value = '';
+  editingGoalId = null;
+}
+
+function saveGoal() {
+  const text = document.getElementById('goal-input').value.trim();
+  if (!text) return;
+  haptic('success');
+
+  if (editingGoalId) {
+    // Edit existing
+    const goal = state.goals.find(g => g.id === editingGoalId);
+    if (goal) {
+      goal.text = text;
+      showToast('✅ تم تحديث الهدف');
+    }
+  } else {
+    // Add new
+    state.goals.unshift({
+      id: Date.now(),
+      text,
+      done: false,
+      date: new Date().toLocaleDateString('ar')
+    });
+    showToast('✅ تمت إضافة الهدف');
+  }
+
+  saveToStorage();
+  renderGoals();
+  updateStats();
+  closeGoalModal();
+}
+
+function toggleGoal(id) {
+  haptic('medium');
+  const goal = state.goals.find(g => g.id === id);
+  if (goal) {
+    goal.done = !goal.done;
+    saveToStorage();
+    renderGoals();
+    updateStats();
+  }
+}
+
+function deleteGoal(id) {
+  state.goals = state.goals.filter(g => g.id !== id);
+  saveToStorage();
+  renderGoals();
+  updateStats();
+  showToast('🗑️ تم حذف الهدف');
+}
+
+function renderGoals() {
+  const list = document.getElementById('goals-list');
+  const count = document.getElementById('goals-count');
+  count.textContent = `${state.goals.length} أهداف`;
+
+  if (state.goals.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-text">لا يوجد أهداف بعد<br>اضغط + لإضافة هدف جديد</div></div>`;
+    return;
+  }
+
+  list.innerHTML = state.goals.map(g => `
+    <div class="goal-item">
+      <div class="goal-check ${g.done ? 'done' : ''}" onclick="toggleGoal(${g.id})">${g.done ? '✓' : ''}</div>
+      <div class="goal-content">
+        <div class="goal-text ${g.done ? 'done' : ''}">${g.text}</div>
+        <div class="goal-date">${g.date}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <button class="goal-delete" onclick="openEditGoal(${g.id})" style="color:var(--accent2);">✎</button>
+        <button class="goal-delete" onclick="deleteGoal(${g.id})">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== SETTINGS =====
+function loadSettingsUI() {
+  document.getElementById('api-key').value = state.settings.apiKey || '';
+  document.getElementById('model-name').value = state.settings.model || 'openai/gpt-4o';
+  const temp = state.settings.temperature ?? 0.7;
+  document.getElementById('temperature').value = temp;
+  document.getElementById('temp-val').textContent = parseFloat(temp).toFixed(1);
+  const maxMsg = state.settings.maxMessages ?? 10;
+  document.getElementById('max-messages').value = maxMsg;
+  document.getElementById('msg-val').textContent = maxMsg;
+}
+
+function saveSettings() {
+  state.settings.apiKey = document.getElementById('api-key').value.trim();
+  state.settings.model = document.getElementById('model-name').value.trim();
+  state.settings.temperature = parseFloat(document.getElementById('temperature').value);
+  state.settings.maxMessages = parseInt(document.getElementById('max-messages').value);
+  // Save reminder settings
+  if (state.settings.reminderEnabled) {
+    state.settings.reminderTime = document.getElementById('reminder-time')?.value || '09:00';
+    state.settings.reminderMsg = document.getElementById('reminder-msg')?.value || 'حان وقت مراجعة أهدافك! 🎯';
+    scheduleReminder();
+  }
+  saveToStorage();
+  showToast('✅ تم حفظ الإعدادات');
+  updateChatModelLabel();
+}
+
+// ===== PROMPTS =====
+function openAddPrompt() {
+  editingPromptId = null;
+  document.querySelector('#prompt-modal .modal-title').textContent = 'برومبت جديد';
+  document.querySelector('#prompt-modal .modal-save').textContent = 'حفظ';
+  document.getElementById('prompt-name-input').value = '';
+  document.getElementById('prompt-text-input').value = '';
+  document.getElementById('prompt-modal').classList.add('show');
+}
+
+function openEditPrompt(id) {
+  const p = state.settings.prompts.find(p => p.id === id);
+  if (!p) return;
+  haptic('light');
+  editingPromptId = id;
+  document.querySelector('#prompt-modal .modal-title').textContent = 'تعديل البرومبت';
+  document.querySelector('#prompt-modal .modal-save').textContent = 'حفظ التعديل';
+  document.getElementById('prompt-name-input').value = p.name;
+  document.getElementById('prompt-text-input').value = p.text;
+  document.getElementById('prompt-modal').classList.add('show');
+}
+
+function closePromptModal() {
+  document.getElementById('prompt-modal').classList.remove('show');
+  document.getElementById('prompt-name-input').value = '';
+  document.getElementById('prompt-text-input').value = '';
+  editingPromptId = null;
+}
+
+function savePrompt() {
+  const name = document.getElementById('prompt-name-input').value.trim();
+  const text = document.getElementById('prompt-text-input').value.trim();
+  if (!name || !text) { showToast('⚠️ أضف الاسم والنص'); return; }
+
+  if (editingPromptId) {
+    const p = state.settings.prompts.find(p => p.id === editingPromptId);
+    if (p) {
+      p.name = name;
+      p.text = text;
+      showToast('✅ تم تحديث البرومبت');
+    }
+  } else {
+    const newPrompt = { id: Date.now(), name, text };
+    state.settings.prompts.push(newPrompt);
+    // First prompt ever → auto-activate. Otherwise leave it OFF so the user picks explicitly.
+    if (!state.settings.activePromptIds) state.settings.activePromptIds = [];
+    if (state.settings.prompts.length === 1) {
+      state.settings.activePromptIds = [newPrompt.id];
+    }
+    showToast('✅ تم إضافة البرومبت');
+  }
+  saveToStorage();
+  renderPrompts();
+  closePromptModal();
+}
+
+function toggleActivePrompt(id) {
+  haptic('light');
+  if (!Array.isArray(state.settings.activePromptIds)) state.settings.activePromptIds = [];
+  const idx = state.settings.activePromptIds.indexOf(id);
+  if (idx >= 0) {
+    state.settings.activePromptIds.splice(idx, 1);
+  } else {
+    state.settings.activePromptIds.push(id);
+  }
+  saveToStorage();
+  renderPrompts();
+}
+
+function clearActivePrompts() {
+  haptic('medium');
+  state.settings.activePromptIds = [];
+  saveToStorage();
+  renderPrompts();
+  showToast('🚫 تم إلغاء كل البرومبتات النشطة');
+}
+
+function deletePrompt(id) {
+  state.settings.prompts = state.settings.prompts.filter(p => p.id !== id);
+  if (Array.isArray(state.settings.activePromptIds)) {
+    state.settings.activePromptIds = state.settings.activePromptIds.filter(x => x !== id);
+  }
+  saveToStorage();
+  renderPrompts();
+  showToast('🗑️ تم حذف البرومبت');
+}
+
+function renderPrompts() {
+  const list = document.getElementById('prompts-list');
+  if (!list) return;
+  const activeIds = state.settings.activePromptIds || [];
+
+  if (state.settings.prompts.length === 0) {
+    list.innerHTML = `<div style="text-align:center;color:var(--text-dim);font-size:13px;padding:16px;">لا يوجد برومبتات بعد</div>`;
+    return;
+  }
+
+  // Status banner: how many are active
+  const statusBanner = `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;margin-bottom:10px;background:${activeIds.length > 0 ? 'rgba(139,127,255,0.1)' : 'var(--surface2)'};border:1px solid ${activeIds.length > 0 ? 'rgba(139,127,255,0.25)' : 'var(--border)'};border-radius:12px;font-size:12px;">
+      <span style="color:${activeIds.length > 0 ? 'var(--accent2)' : 'var(--text-dim)'};font-weight:600;">
+        ${activeIds.length > 0 ? `✨ ${activeIds.length} برومبت نشط` : '⚪ لا يوجد برومبت نشط'}
+      </span>
+      ${activeIds.length > 0 ? `<button onclick="clearActivePrompts()" style="background:none;border:none;color:var(--text-dim);font-size:12px;cursor:pointer;font-family:'Tajawal',sans-serif;text-decoration:underline;">إلغاء الكل</button>` : ''}
+    </div>
+  `;
+
+  const items = state.settings.prompts.map(p => {
+    const isActive = activeIds.includes(p.id);
+    const order = isActive ? activeIds.indexOf(p.id) + 1 : null;
+    return `
+    <div class="prompt-item ${isActive ? 'active-prompt' : ''}">
+      <div onclick="toggleActivePrompt(${p.id})" style="width:24px;height:24px;border-radius:8px;border:2px solid ${isActive ? 'var(--accent2)' : 'var(--border)'};background:${isActive ? 'var(--accent2)' : 'transparent'};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:1px;transition:all 0.2s;color:#fff;font-size:12px;font-weight:700;">
+        ${isActive ? (order || '✓') : ''}
+      </div>
+      <div class="prompt-content">
+        <div class="prompt-name">${p.name} ${isActive ? `<span style="font-size:10px;color:var(--accent2);margin-right:4px;">• مفعّل</span>` : ''}</div>
+        <div class="prompt-preview">${p.text.substring(0, 60)}${p.text.length > 60 ? '...' : ''}</div>
+      </div>
+      <div class="prompt-actions">
+        <button class="prompt-action-btn" onclick="openEditPrompt(${p.id})" style="color:var(--accent2);border-color:rgba(139,127,255,0.3);">تعديل</button>
+        <button class="prompt-action-btn del" onclick="deletePrompt(${p.id})">حذف</button>
+      </div>
+    </div>
+    `;
+  }).join('');
+
+  list.innerHTML = statusBanner + items;
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// Close modals on overlay click
+document.getElementById('goal-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeGoalModal();
+});
+document.getElementById('prompt-modal').addEventListener('click', function(e) {
+  if (e.target === this) closePromptModal();
+});
+
+init();
+
+// ===== VOICE TO TEXT =====
+let recognition = null;
+let isRecording = false;
+
+function toggleVoice() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast('⚠️ المتصفح مش بيدعم الصوت');
+    return;
+  }
+  if (isRecording) {
+    stopVoice();
+  } else {
+    startVoice();
+  }
+}
+
+function startVoice() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.lang = 'ar-EG';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+
+  recognition.onstart = () => {
+    isRecording = true;
+    haptic('medium');
+    document.getElementById('voice-btn').classList.add('recording');
+    document.getElementById('voice-btn').textContent = '🔴';
+    showToast('🎤 جاري الاستماع...');
+  };
+
+  recognition.onresult = (e) => {
+    const transcript = Array.from(e.results)
+      .map(r => r[0].transcript).join('');
+    const input = document.getElementById('chat-input');
+    input.value = transcript;
+    autoResize(input);
+  };
+
+  recognition.onend = () => {
+    stopVoice();
+  };
+
+  recognition.onerror = (e) => {
+    stopVoice();
+    showToast('⚠️ مش قدر يسمع، حاول تاني');
+  };
+
+  recognition.start();
+}
+
+function stopVoice() {
+  isRecording = false;
+  if (recognition) recognition.stop();
+  const btn = document.getElementById('voice-btn');
+  if (btn) { btn.classList.remove('recording'); btn.textContent = '🎤'; }
+}
+
+// ===== SLASH COMMANDS =====
+function handleChatKeydown(e) {
+  const suggestions = document.getElementById('slash-suggestions');
+  const items = suggestions.querySelectorAll('.slash-item');
+  const highlighted = suggestions.querySelector('.highlighted');
+  const idx = Array.from(items).indexOf(highlighted);
+
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (items.length) {
+      if (highlighted) highlighted.classList.remove('highlighted');
+      const prev = items[Math.max(0, idx - 1)];
+      prev.classList.add('highlighted');
+    }
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (items.length) {
+      if (highlighted) highlighted.classList.remove('highlighted');
+      const next = items[Math.min(items.length - 1, idx + 1)];
+      next.classList.add('highlighted');
+    }
+  } else if (e.key === 'Enter' && !e.shiftKey) {
+    if (highlighted) {
+      e.preventDefault();
+      highlighted.click();
+    } else {
+      e.preventDefault();
+      sendMessage();
+    }
+  } else if (e.key === 'Escape') {
+    closeSlashSuggestions();
+  }
+}
+
+function handleSlashCommand(val) {
+  const suggestions = document.getElementById('slash-suggestions');
+  if (!val.startsWith('/')) {
+    closeSlashSuggestions();
+    return;
+  }
+
+  const query = val.slice(1).toLowerCase();
+
+  // Build command list: prompts + fixed commands
+  const promptCmds = (state.settings.prompts || []).map(p => ({
+    slash: p.name.replace(/\s+/g, '').toLowerCase(),
+    label: '/' + p.name,
+    preview: p.text.substring(0, 40) + '...',
+    action: () => applySlashPrompt(p.id)
+  }));
+
+  const fixedCmds = [
+    { slash: 'اهداف', label: '/أهداف', preview: 'تحليل أهدافك النشطة مع AI', action: () => chatWithGoals() },
+    { slash: 'مسح', label: '/مسح', preview: 'مسح المحادثة الحالية', action: () => clearCurrentChat() },
+  ];
+
+  const allCmds = [...promptCmds, ...fixedCmds];
+  const filtered = query
+    ? allCmds.filter(c => c.slash.includes(query) || c.label.includes(query))
+    : allCmds;
+
+  if (!filtered.length) { closeSlashSuggestions(); return; }
+
+  // Store commands globally for onclick access
+  window._slashCmds = filtered;
+  suggestions.innerHTML = filtered.map((c, i) => `
+    <div class="slash-item" onclick="window._slashCmds[${i}].action()">
+      <div style="flex:1">
+        <div class="slash-item-name">${c.label}</div>
+        <div class="slash-item-preview">${c.preview}</div>
+      </div>
+      <span class="slash-badge">أمر</span>
+    </div>
+  `).join('');
+
+  suggestions.classList.add('show');
+}
+
+function closeSlashSuggestions() {
+  const s = document.getElementById('slash-suggestions');
+  if (s) s.classList.remove('show');
+}
+
+function applySlashPrompt(id) {
+  haptic('light');
+  const p = state.settings.prompts.find(p => p.id === id);
+  if (!p) return;
+  // Toggle this prompt as the only active one
+  state.settings.activePromptIds = [id];
+  saveToStorage();
+  renderPrompts();
+  updateChatModelLabel();
+  document.getElementById('chat-input').value = '';
+  closeSlashSuggestions();
+  showToast(`✨ تم تفعيل برومبت: ${p.name}`);
+}
+
+function clearCurrentChat() {
+  document.getElementById('chat-input').value = '';
+  closeSlashSuggestions();
+  const msgs = document.getElementById('messages');
+  msgs.innerHTML = '';
+  const conv = getActiveConv();
+  if (conv) conv.messages = [];
+  addMessage('أهلاً! أنا هنا عشانك. إيه اللي في بالك؟ 😊', 'ai', 'الآن');
+  saveToStorage();
+  showToast('🗑️ تم مسح المحادثة');
+}
+
+// Close slash on outside click
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.chat-input-wrapper') && !e.target.closest('.slash-suggestions')) {
+    closeSlashSuggestions();
+  }
+});
+
+// ===== CHAT WITH GOALS =====
+async function chatWithGoals() {
+  closeSlashSuggestions();
+  document.getElementById('chat-input').value = '';
+  const activeGoals = state.goals.filter(g => !g.done);
+  const doneGoals = state.goals.filter(g => g.done);
+
+  if (activeGoals.length === 0) {
+    showToast('📝 مفيش أهداف نشطة بعد!');
+    return;
+  }
+
+  const { apiKey, model, prompts, activePromptIds, temperature, maxMessages } = state.settings;
+  if (!apiKey) { showToast('⚠️ أضف مفتاح API أولاً'); return; }
+
+  const nl = '\n';
+  const goalsText = 'الأهداف النشطة (' + activeGoals.length + '):' + nl + activeGoals.map((g,i) => (i+1) + '. ' + g.text).join(nl);
+
+  const userMsg = 'حلل أهدافي التالية وقدملي رؤيتك وتوصياتك بشكل عملي:' + nl + nl + goalsText;
+
+  navigate('chat');
+  const now = new Date().toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' });
+  addMessage('🎯 تحليل أهدافي...', 'user', now);
+
+  const conv = getActiveConv();
+  conv.messages.push({ role: 'user', content: userMsg, time: now });
+  state.chatCount++;
+
+  const typing = document.getElementById('typing');
+  typing.classList.add('show');
+  scrollMessages();
+
+  let systemPrompt = 'أنت مدرب حياة ذكي ومتفهم. حلل أهداف المستخدم وقدم توصيات عملية ومحددة بالعربي.';
+  const activeIds = activePromptIds || [];
+  if (activeIds.length > 0) {
+    const texts = activeIds.map(id => prompts.find(p => p.id === id)).filter(Boolean).map(p => p.text);
+    if (texts.length) systemPrompt = texts.join('\n\n---\n\n');
+  }
+
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://hayah-mokhtalefa.app',
+        'X-Title': 'Hayah Mokhtalefa'
+      },
+      body: JSON.stringify({
+        model: model || 'openai/gpt-4o',
+        temperature: temperature ?? 0.7,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMsg }
+        ]
+      })
+    });
+    const data = await res.json();
+    typing.classList.remove('show');
+    if (data.choices && data.choices[0]) {
+      const reply = data.choices[0].message.content;
+      const replyTime = new Date().toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' });
+      conv.messages.push({ role: 'assistant', content: reply, time: replyTime });
+      addMessage(reply, 'ai', replyTime);
+    } else {
+      addMessage('حدث خطأ في التحليل.', 'ai', now);
+    }
+  } catch(e) {
+    typing.classList.remove('show');
+    addMessage('تعذر الاتصال: ' + e.message, 'ai', now);
+  }
+  saveToStorage();
+  renderConversations();
+  updateStats();
+}
+
+// ===== DAILY REMINDERS =====
+let reminderInterval = null;
+
+function toggleReminder() {
+  haptic('medium');
+  const toggle = document.getElementById('reminder-toggle');
+  const isOn = toggle.classList.contains('on');
+  if (isOn) {
+    disableReminder();
+  } else {
+    requestNotificationPermission();
+  }
+}
+
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) {
+    showToast('⚠️ المتصفح مش بيدعم الإشعارات');
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    enableReminder();
+  } else {
+    showToast('⚠️ اسمح للمتصفح بالإشعارات من الإعدادات');
+  }
+}
+
+function enableReminder() {
+  state.settings.reminderEnabled = true;
+  state.settings.reminderTime = document.getElementById('reminder-time')?.value || '09:00';
+  state.settings.reminderMsg = document.getElementById('reminder-msg')?.value || 'حان وقت مراجعة أهدافك! 🎯';
+  saveToStorage();
+  updateReminderUI();
+  scheduleReminder();
+  showToast('🔔 تم تفعيل التذكير');
+}
+
+function disableReminder() {
+  state.settings.reminderEnabled = false;
+  saveToStorage();
+  updateReminderUI();
+  if (reminderInterval) clearInterval(reminderInterval);
+  showToast('🔕 تم إيقاف التذكير');
+}
+
+function updateReminderUI() {
+  const toggle = document.getElementById('reminder-toggle');
+  const timeRow = document.getElementById('reminder-time-row');
+  const msgRow = document.getElementById('reminder-msg-row');
+  if (!toggle) return;
+  const on = state.settings.reminderEnabled;
+  toggle.classList.toggle('on', !!on);
+  if (timeRow) timeRow.style.display = on ? '' : 'none';
+  if (msgRow) msgRow.style.display = on ? '' : 'none';
+  if (document.getElementById('reminder-time'))
+    document.getElementById('reminder-time').value = state.settings.reminderTime || '09:00';
+  if (document.getElementById('reminder-msg'))
+    document.getElementById('reminder-msg').value = state.settings.reminderMsg || 'حان وقت مراجعة أهدافك! 🎯';
+}
+
+function scheduleReminder() {
+  if (reminderInterval) clearInterval(reminderInterval);
+  // Check every minute if it's time
+  reminderInterval = setInterval(() => {
+    if (!state.settings.reminderEnabled) return;
+    const now = new Date();
+    const [h, m] = (state.settings.reminderTime || '09:00').split(':');
+    if (now.getHours() == h && now.getMinutes() == m) {
+      fireReminder();
+    }
+  }, 60000);
+}
+
+function fireReminder() {
+  const activeGoals = state.goals.filter(g => !g.done);
+  const body = activeGoals.length
+    ? `عندك ${activeGoals.length} هدف نشط. ${activeGoals[0]?.text || ''}`
+    : 'افتح التطبيق وراجع أهدافك اليوم!';
+  const msg = state.settings.reminderMsg || 'حان وقت مراجعة أهدافك! 🎯';
+  if (Notification.permission === 'granted') {
+    new Notification(msg, { body, icon: '🎯', badge: '🎯' });
+  }
+}
+
+// Override saveSettings to also save reminder
+// reminder system initialized in init()
+
+
+// ===== SETTINGS TABS =====
+function switchSettingsTab(tab, btn) {
+  haptic('light');
+  document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.settings-tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'app') updateDbSize();
+}
+
+function updateDbSize() {
+  const el = document.getElementById('db-size');
+  if (!el) return;
+  try {
+    const data = localStorage.getItem('hayah_state') || '';
+    const kb = (new Blob([data]).size / 1024).toFixed(1);
+    el.textContent = kb + ' KB';
+  } catch(e) { el.textContent = '—'; }
+}
+
+// ===== PWA INSTALL =====
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+});
+
+async function installPWA() {
+  haptic('medium');
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    const { outcome } = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    if (outcome === 'accepted') {
+      showToast('✅ تم التثبيت!');
+    } else {
+      showPWAInstructions();
+    }
+  } else {
+    showPWAInstructions();
+  }
+}
+
+function showPWAInstructions() {
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase());
+  const isAndroid = /android/i.test(navigator.userAgent);
+  let msg = '';
+  if (isIOS) {
+    msg = '📱 iOS: اضغط زرار المشاركة ↑ ثم "Add to Home Screen"';
+  } else if (isAndroid) {
+    msg = '📱 Android: افتح قائمة المتصفح ⋮ ثم "تثبيت التطبيق" أو "Add to Home Screen"';
+  } else {
+    msg = '💻 افتح قائمة المتصفح واختر "تثبيت التطبيق"';
+  }
+  // Show as a bigger toast
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.style.maxWidth = '90%';
+  toast.style.whiteSpace = 'normal';
+  toast.style.textAlign = 'center';
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+    toast.style.maxWidth = '';
+    toast.style.whiteSpace = '';
+  }, 5000);
+}
+
+// ===== EXPORT DATABASE =====
+function exportDatabase() {
+  haptic('success');
+  try {
+    const data = localStorage.getItem('hayah_state') || '{}';
+    const date = new Date().toISOString().split('T')[0];
+    const filename = 'hayah-backup-' + date + '.json';
+
+    // data URI أشغل على موبايل من createObjectURL
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(data);
+    const a = document.createElement('a');
+    a.href = dataUri;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => document.body.removeChild(a), 500);
+    showToast('💾 تم التصدير — هتلاقيه في التنزيلات');
+  } catch(e) {
+    showToast('❌ فشل التصدير: ' + e.message);
+  }
+}
+
+// ===== IMPORT DATABASE =====
+function importDatabase(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      // يكفي حاجة واحدة منهم تكون موجودة
+      const isValid = parsed.goals || parsed.settings || parsed.conversations || parsed.dumps;
+      if (!isValid) {
+        showToast('❌ الملف مش صحيح');
+        return;
+      }
+      // merge مع الـ state الحالي عشان الحقول الجديدة زي dumps متضيعش
+      const merged = { ...state, ...parsed };
+      localStorage.setItem('hayah_state', JSON.stringify(merged));
+      showToast('✅ تم الاسترداد! سيتم إعادة التحميل...');
+      setTimeout(() => location.reload(), 1500);
+    } catch(err) {
+      showToast('❌ خطأ في قراءة الملف: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+</script>
+</body>
+</html>
