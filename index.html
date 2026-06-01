@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#050507">
 <title>حياة مختلفة</title>
-<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%D8%AD%D9%8A%D8%A7%D8%A9%20%D9%85%D8%AE%D8%AA%D9%84%D9%81%D8%A9%22%2C%22short_name%22%3A%22%D8%AD%D9%8A%D8%A7%D8%AA%D9%8A%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23050507%22%2C%22theme_color%22%3A%22%23050507%22%2C%22orientation%22%3A%22portrait%22%7D">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%D8%AD%D9%8A%D8%A7%D8%A9%20%D9%85%D8%AE%D8%AA%D9%84%D9%81%D8%A9%22%2C%22short_name%22%3A%22%D8%AD%D9%8A%D8%A7%D8%AA%D9%8A%22%2C%22start_url%22%3A%22%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23050507%22%2C%22theme_color%22%3A%22%23050507%22%7D">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -46,7 +46,6 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Background orbs */
   .orb {
     position: fixed;
     border-radius: 50%;
@@ -64,18 +63,16 @@
     to { transform: translate(30px, 20px) scale(1.1); }
   }
 
-  /* Grain overlay */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='256' height='256' fill='%23050507' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='256' height='256' fill='%23050507'/%3E%3C/svg%3E");
     opacity: 0.03;
     pointer-events: none;
     z-index: 100;
   }
 
-  /* App container */
   .app {
     max-width: 430px;
     margin: 0 auto;
@@ -86,14 +83,11 @@
     z-index: 1;
   }
 
-  /* Pages */
   .page { display: none; flex-direction: column; min-height: 100vh; animation: fadeIn 0.35s ease; }
   .page.active { display: flex; }
 
-  /* chat layout handled by #page-chat fixed positioning */
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* ===== HOME PAGE ===== */
   .home-header {
     padding: 60px 28px 20px;
     position: relative;
@@ -136,7 +130,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* Quote card */
   .quote-card {
     margin: 24px 28px;
     background: var(--surface);
@@ -180,7 +173,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* Stats row */
   .stats-row {
     display: flex;
     gap: 12px;
@@ -225,7 +217,6 @@
     font-weight: 400;
   }
 
-  /* Main nav buttons */
   .nav-section {
     flex: 1;
     padding: 0 28px 120px;
@@ -321,29 +312,26 @@
   }
   .nav-btn:hover .nav-arrow { transform: translateX(-4px); }
 
-  /* ===== CHAT PAGE — BULLETPROOF MOBILE ===== */
-
-  /* The chat page itself is a fixed full-screen column */
   #page-chat {
-  display: none;
-  flex-direction: column;
-  min-height: 100vh;
-  background: var(--bg);
-}
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg);
+  }
   #page-chat.active { display: flex !important; }
 
   .chat-header {
-  position: sticky;
-  top: 0;
-  padding: 44px 12px 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  z-index: 99;
-}
+    position: sticky;
+    top: 0;
+    padding: 44px 12px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    z-index: 99;
+  }
 
   .back-btn {
     width: 36px; height: 36px;
@@ -370,14 +358,14 @@
   }
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
 
-  /* Messages — the ONLY scrollable area */
   .messages {
-  flex: 1;
-  padding: 10px 10px 100px; /* Padding bottom ensures messages aren't hidden behind the sticky input */
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+    flex: 1;
+    padding: 10px 10px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+  }
   .messages::-webkit-scrollbar { display: none; }
 
   .msg {
@@ -421,19 +409,18 @@
   .dot:nth-child(2){animation-delay:.15s;} .dot:nth-child(3){animation-delay:.3s;}
   @keyframes bounce { 0%,60%,100%{transform:translateY(0);opacity:0.4;} 30%{transform:translateY(-5px);opacity:1;} }
 
-  /* Input bar — always at bottom, never hidden */
   .chat-input-area {
-  position: sticky !important;
-  bottom: 0 !important;
-  display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  padding: 8px 8px calc(8px + var(--sab, 0px));
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  z-index: 99;
-  width: 100%;
-}
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    padding: 8px 8px calc(8px + var(--sab, 0px));
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    z-index: 99;
+    width: 100%;
+  }
 
   .chat-input {
     flex: 1;
@@ -467,7 +454,6 @@
   }
   .send-btn:active { transform: scale(0.88); }
 
-  /* ===== SETTINGS PAGE ===== */
   .settings-header {
     padding: 50px 20px 16px;
     display: flex;
@@ -528,6 +514,8 @@
     font-size: 14px;
     outline: none;
     transition: border-color 0.2s;
+    direction: rtl;
+    text-align: right;
   }
   .settings-input:focus, .settings-select:focus { border-color: var(--accent1); }
   .settings-input::placeholder { color: var(--text-dim); }
@@ -619,7 +607,6 @@
     border-bottom-color: var(--accent1);
   }
 
-  /* ===== TOOLS BUTTON (replaces separate attach + dump btns) ===== */
   .tools-btn {
     width: 40px; height: 40px;
     background: var(--surface2);
@@ -634,7 +621,6 @@
   }
   .tools-btn:active { transform: scale(0.9); }
 
-  /* ===== MOOD PICKER ===== */
   .mood-menu {
     display: none;
     position: absolute;
@@ -706,6 +692,84 @@
     width: 100%; text-align: right;
   }
   .tools-menu-item:active { background: var(--surface2); }
+
+  .goals-header {
+    padding: 50px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .goals-title-wrap { flex: 1; }
+  .goals-title { font-size: 20px; font-weight: 700; }
+  .goals-count { font-size: 12px; color: var(--accent1); margin-top: 2px; }
+
+  .add-btn {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent1), #a8843e);
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 20px; color: #000;
+    font-weight: 900;
+    transition: all 0.2s;
+  }
+  .add-btn:active { transform: scale(0.9); }
+
+  .goals-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: none;
+  }
+
+  .goal-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    animation: slideUp 0.3s ease;
+  }
+
+  .goal-check {
+    width: 24px; height: 24px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    margin-top: 2px;
+    font-size: 13px;
+  }
+  .goal-check.done { background: var(--accent1); border-color: var(--accent1); color: #000; }
+
+  .goal-content { flex: 1; }
+  .goal-text { font-size: 15px; font-weight: 500; line-height: 1.5; }
+  .goal-text.done { text-decoration: line-through; color: var(--text-dim); }
+  .goal-date { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  .goal-delete {
+    background: none; border: none;
+    color: var(--text-dim); font-size: 16px;
+    cursor: pointer; padding: 2px;
+    transition: color 0.2s;
+  }
+  .goal-delete:hover { color: var(--accent3); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+  }
 </style>
 </head>
 <body>
@@ -714,7 +778,6 @@
 <div class="orb orb3"></div>
 
 <div class="app">
-  <!-- ===== HOME PAGE ===== -->
   <div class="page active" id="page-home">
     <div class="home-header">
       <div class="greeting">أهلاً وسهلاً</div>
@@ -737,8 +800,8 @@
         <div class="stat-label">أهداف</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number" id="stat-dumps">0</div>
-        <div class="stat-label">dumps</div>
+        <div class="stat-number" id="stat-convs">0</div>
+        <div class="stat-label">رسائل</div>
       </div>
     </div>
 
@@ -772,7 +835,6 @@
     </div>
   </div>
 
-  <!-- ===== SETTINGS PAGE ===== -->
   <div class="page" id="page-settings">
     <div class="settings-header">
       <div class="back-btn" onclick="navigate('home')">›</div>
@@ -782,15 +844,22 @@
       </div>
     </div>
 
-    <!-- Tabs -->
     <div class="settings-tabs">
       <button class="settings-tab active" onclick="switchSettingsTab('ai', this)">🤖 الذكاء الاصطناعي</button>
     </div>
 
     <div class="settings-scroll">
-
-      <!-- TAB: AI SETTINGS -->
       <div class="settings-tab-content active" id="tab-ai">
+
+        <div class="settings-section">
+          <div class="settings-section-title">النظام والتعليمات</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <div class="settings-label">📋 System Prompt</div>
+              <textarea class="settings-input" id="system-prompt" placeholder="أنت مساعد شخصي..." style="min-height:100px;resize:vertical;"></textarea>
+            </div>
+          </div>
+        </div>
 
         <div class="settings-section">
           <div class="settings-section-title">اختر API</div>
@@ -844,11 +913,9 @@
         <button class="save-settings-btn" onclick="saveSettings()">💾 حفظ إعدادات الذكاء</button>
 
       </div>
-
     </div>
   </div>
 
-  <!-- ===== CHAT PAGE ===== -->
   <div class="page" id="page-chat">
     <div class="chat-header">
       <div class="back-btn" onclick="navigate('home')">›</div>
@@ -870,7 +937,7 @@
     <div class="chat-input-area">
       <textarea class="chat-input" id="chat-input" placeholder="اكتب رسالة..." onkeydown="handleChatKeydown(event)"></textarea>
       <button class="send-btn" onclick="sendMessage()">✈️</button>
-      <button class="tools-btn" onclick="openToolsMenu()">⚙️</button>
+      <button class="tools-btn" onclick="openToolsMenu(event)">⚙️</button>
 
       <div class="tools-menu" id="tools-menu">
         <button class="tools-menu-item" onclick="openMoodPicker(event)">😊 اختر حالتك</button>
@@ -889,7 +956,6 @@
     </div>
   </div>
 
-  <!-- ===== GOALS PAGE ===== -->
   <div class="page" id="page-goals">
     <div class="chat-header">
       <div class="back-btn" onclick="navigate('home')">›</div>
@@ -899,7 +965,7 @@
       </div>
       <button class="add-btn" onclick="openAddGoal()">+</button>
     </div>
-    <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scrollbar-width:none;" id="goals-list">
+    <div class="goals-list" id="goals-list">
       <div style="text-align:center;padding:60px 20px;color:var(--text-dim);">
         <div style="font-size:48px;margin-bottom:12px;">🎯</div>
         <div style="font-size:15px;font-weight:300;">لا يوجد أهداف بعد<br>اضغط + لإضافة هدف جديد</div>
@@ -910,7 +976,6 @@
 </div>
 
 <script>
-// ===== STATE =====
 let state = {
   goals: [],
   settings: {
@@ -918,16 +983,15 @@ let state = {
     apiKey: '',
     model: 'openai/gpt-4o',
     temperature: 0.7,
-    maxMessages: 10
+    maxMessages: 10,
+    systemPrompt: 'أنت مساعد شخصي ودود ومتفهم. تساعد المستخدم على تحقيق أهدافه وتحسين حياته بنصائح عملية وعملية. كن إيجابياً و��اعماً دائماً.'
   },
   conversations: [],
   activeConvId: null,
-  chatCount: 0
 };
 
 let currentMood = null;
 
-// ===== INIT =====
 function init() {
   loadFromStorage();
   renderHome();
@@ -936,7 +1000,6 @@ function init() {
   showRandomQuote();
 }
 
-// ===== STORAGE =====
 function saveToStorage() {
   localStorage.setItem('hayah_state', JSON.stringify(state));
 }
@@ -948,19 +1011,18 @@ function loadFromStorage() {
   }
 }
 
-// ===== NAVIGATION =====
 function navigate(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
   if (page === 'home') renderHome();
   if (page === 'goals') renderGoals();
+  if (page === 'chat') renderChat();
 }
 
-// ===== HOME PAGE =====
 function renderHome() {
-  document.getElementById('stat-chats').textContent = state.conversations.length;
+  document.getElementById('stat-chats').textContent = state.conversations.filter(c => c.messages && c.messages.length > 0).length;
   document.getElementById('stat-goals').textContent = state.goals.length;
-  document.getElementById('stat-dumps').textContent = '0';
+  document.getElementById('stat-convs').textContent = state.conversations.reduce((sum, c) => sum + (c.messages ? c.messages.length : 0), 0);
 }
 
 function showRandomQuote() {
@@ -976,7 +1038,6 @@ function showRandomQuote() {
   document.getElementById('quote-author').textContent = 'حياة مختلفة';
 }
 
-// ===== SETTINGS =====
 function onApiProviderChange() {
   const provider = document.getElementById('api-provider').value;
   state.settings.apiProvider = provider;
@@ -997,152 +1058,67 @@ function onApiProviderChange() {
     apiKeyInput.placeholder = 'AIzaSy...';
     modelInput.placeholder = 'gemini-pro';
   }
-  
-  saveSettings();
-  updateChatModelLabel();
 }
 
 function loadSettingsUI() {
-  const provider = state.settings.apiProvider || 'openrouter';
-  document.getElementById('api-provider').value = provider;
-  document.getElementById('api-key').value = state.settings.apiKey || '';
-  document.getElementById('model-name').value = state.settings.model || (provider === 'gemini' ? 'gemini-pro' : 'openai/gpt-4o');
-  const temp = state.settings.temperature ?? 0.7;
-  document.getElementById('temperature').value = temp;
-  document.getElementById('temp-val').textContent = parseFloat(temp).toFixed(1);
-  const maxMsg = state.settings.maxMessages ?? 10;
-  document.getElementById('max-messages').value = maxMsg;
-  document.getElementById('msg-val').textContent = maxMsg;
+  document.getElementById('api-provider').value = state.settings.apiProvider;
+  document.getElementById('api-key').value = state.settings.apiKey;
+  document.getElementById('model-name').value = state.settings.model;
+  document.getElementById('temperature').value = state.settings.temperature;
+  document.getElementById('temp-val').textContent = state.settings.temperature.toFixed(1);
+  document.getElementById('max-messages').value = state.settings.maxMessages;
+  document.getElementById('msg-val').textContent = state.settings.maxMessages;
+  document.getElementById('system-prompt').value = state.settings.systemPrompt;
   onApiProviderChange();
 }
 
 function saveSettings() {
-  state.settings.apiProvider = document.getElementById('api-provider').value;
-  state.settings.apiKey = document.getElementById('api-key').value.trim();
-  state.settings.model = document.getElementById('model-name').value.trim();
+  state.settings.apiKey = document.getElementById('api-key').value;
+  state.settings.model = document.getElementById('model-name').value;
   state.settings.temperature = parseFloat(document.getElementById('temperature').value);
   state.settings.maxMessages = parseInt(document.getElementById('max-messages').value);
+  state.settings.systemPrompt = document.getElementById('system-prompt').value;
+  state.settings.apiProvider = document.getElementById('api-provider').value;
+  
   saveToStorage();
-  showToast('✅ تم حفظ الإعدادات');
-  updateChatModelLabel();
+  alert('✅ تم حفظ الإعدادات بنجاح!');
+}
+
+function switchSettingsTab(tab, btn) {
+  document.querySelectorAll('.settings-tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.settings-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  btn.classList.add('active');
 }
 
 function updateChatModelLabel() {
-  const provider = state.settings.apiProvider || 'openrouter';
-  const model = state.settings.model || 'غير محدد';
-  document.getElementById('chat-model-label').textContent = `${provider.toUpperCase()} • ${model}`;
+  document.getElementById('chat-model-label').textContent = state.settings.model || 'جاري التحميل...';
 }
 
-// ===== CHAT =====
-function sendMessage() {
-  const input = document.getElementById('chat-input');
-  const text = input.value.trim();
-  if (!text) return;
-
-  const { apiKey, apiProvider, model } = state.settings;
-  if (!apiKey) {
-    showToast('⚠️ أضف مفتاح API أولاً');
-    navigate('settings');
-    return;
-  }
-
-  // Add user message
-  addMessageToChat('user', text);
-  input.value = '';
-  input.style.height = 'auto';
-
-  // Show typing indicator
-  document.getElementById('typing-indicator').classList.add('show');
-
-  // Call API
-  if (apiProvider === 'gemini') {
-    callGeminiAPI(text, model, apiKey);
-  } else {
-    callOpenRouterAPI(text, model, apiKey);
-  }
-}
-
-async function callOpenRouterAPI(userMessage, model, apiKey) {
-  try {
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://hayah-mokhtalefa.app',
-        'X-Title': 'Hayah Mokhtalefa'
-      },
-      body: JSON.stringify({
-        model: model || 'openai/gpt-4o',
-        messages: [
-          { role: 'user', content: userMessage }
-        ],
-        temperature: state.settings.temperature
-      })
+function renderChat() {
+  if (!state.activeConvId) {
+    state.activeConvId = Date.now().toString();
+    state.conversations.push({
+      id: state.activeConvId,
+      messages: [],
+      createdAt: new Date().toISOString()
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    const data = await response.json();
-    const aiMessage = data.choices?.[0]?.message?.content || '❌ خطأ في الرد';
-    addMessageToChat('ai', aiMessage);
-  } catch (error) {
-    addMessageToChat('ai', `❌ خطأ: ${error.message}`);
-  } finally {
-    document.getElementById('typing-indicator').classList.remove('show');
   }
-}
-
-async function callGeminiAPI(userMessage, model, apiKey) {
-  try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: userMessage }
-            ]
-          }
-        ],
-        generationConfig: {
-          temperature: state.settings.temperature
-        }
-      })
+  
+  const conv = state.conversations.find(c => c.id === state.activeConvId);
+  const messagesDiv = document.getElementById('messages');
+  messagesDiv.innerHTML = '';
+  
+  if (conv && conv.messages) {
+    conv.messages.forEach(msg => {
+      const msgEl = document.createElement('div');
+      msgEl.className = `msg ${msg.role === 'user' ? 'user' : 'ai'}`;
+      msgEl.innerHTML = `<div>${escapeHtml(msg.content)}</div>`;
+      messagesDiv.appendChild(msgEl);
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    const data = await response.json();
-    const aiMessage = data.candidates?.[0]?.content?.parts?.[0]?.text || '❌ خطأ في الرد';
-    addMessageToChat('ai', aiMessage);
-  } catch (error) {
-    addMessageToChat('ai', `❌ خطأ: ${error.message}`);
-  } finally {
-    document.getElementById('typing-indicator').classList.remove('show');
   }
-}
-
-function addMessageToChat(role, text) {
-  const messagesContainer = document.getElementById('messages');
-  const msgDiv = document.createElement('div');
-  msgDiv.className = `msg ${role}`;
-  msgDiv.textContent = text;
   
-  const timeDiv = document.createElement('div');
-  timeDiv.className = 'msg-time';
-  timeDiv.textContent = new Date().toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' });
-  msgDiv.appendChild(timeDiv);
-  
-  messagesContainer.appendChild(msgDiv);
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
 function handleChatKeydown(event) {
@@ -1152,88 +1128,181 @@ function handleChatKeydown(event) {
   }
 }
 
-// ===== GOALS =====
-function renderGoals() {
-  const list = document.getElementById('goals-list');
-  document.getElementById('goals-count').textContent = `${state.goals.length} هدف`;
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
   
-  if (state.goals.length === 0) {
-    list.innerHTML = `
-      <div style="text-align:center;padding:60px 20px;color:var(--text-dim);">
-        <div style="font-size:48px;margin-bottom:12px;">🎯</div>
-        <div style="font-size:15px;font-weight:300;">لا يوجد أهداف بعد<br>اضغط + لإضافة هدف جديد</div>
-      </div>
-    `;
+  if (!text || !state.settings.apiKey) {
+    alert('⚠️ من فضلك أضف API Key في الإعدادات');
     return;
   }
-
-  list.innerHTML = state.goals.map(goal => `
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;gap:14px;align-items:flex-start;">
-      <div style="width:24px;height:24px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:13px;${goal.done ? 'background:var(--accent1);border-color:var(--accent1);color:#000' : ''}" onclick="toggleGoal(${goal.id})">
-        ${goal.done ? '✓' : ''}
-      </div>
-      <div style="flex:1;">
-        <div style="font-size:15px;font-weight:500;line-height:1.5;${goal.done ? 'text-decoration:line-through;color:var(--text-dim)' : ''}">${goal.text}</div>
-        <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">${goal.done ? '✅ مكتمل · ' : ''}${goal.date}</div>
-      </div>
-      <button style="background:none;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;padding:2px;" onclick="deleteGoal(${goal.id})">🗑️</button>
-    </div>
-  `).join('');
-}
-
-function openAddGoal() {
-  const text = prompt('اكتب الهدف:');
-  if (text) {
-    const goal = {
-      id: Date.now(),
-      text: text.trim(),
-      done: false,
-      date: new Date().toLocaleDateString('ar')
-    };
-    state.goals.push(goal);
+  
+  if (!state.activeConvId) {
+    state.activeConvId = Date.now().toString();
+    state.conversations.push({
+      id: state.activeConvId,
+      messages: [],
+      createdAt: new Date().toISOString()
+    });
+  }
+  
+  const conv = state.conversations.find(c => c.id === state.activeConvId);
+  if (!conv.messages) conv.messages = [];
+  
+  conv.messages.push({ role: 'user', content: text });
+  renderChat();
+  input.value = '';
+  
+  document.getElementById('typing-indicator').classList.add('show');
+  
+  try {
+    const response = await callAI(conv.messages);
+    conv.messages.push({ role: 'assistant', content: response });
+    renderChat();
+  } catch (err) {
+    alert('❌ خطأ: ' + err.message);
+  } finally {
+    document.getElementById('typing-indicator').classList.remove('show');
     saveToStorage();
-    renderGoals();
-    showToast('✅ تم إضافة الهدف');
   }
 }
 
-function toggleGoal(id) {
-  const goal = state.goals.find(g => g.id === id);
-  if (goal) {
-    goal.done = !goal.done;
-    saveToStorage();
-    renderGoals();
-    showToast(goal.done ? '🎉 مبروك!' : '↩️ تم إلغاء الإكمال');
+async function callAI(messages) {
+  const provider = state.settings.apiProvider;
+  const apiKey = state.settings.apiKey;
+  const model = state.settings.model;
+  const systemPrompt = state.settings.systemPrompt;
+  
+  const recentMessages = messages.slice(-state.settings.maxMessages);
+  
+  if (provider === 'openrouter') {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...recentMessages.map(m => ({
+            role: m.role === 'assistant' ? 'assistant' : 'user',
+            content: m.content
+          }))
+        ],
+        temperature: state.settings.temperature,
+      })
+    });
+    
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error?.message || 'خطأ في API');
+    }
+    
+    const data = await response.json();
+    return data.choices[0].message.content;
+  } else if (provider === 'gemini') {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: recentMessages.map(m => ({
+          role: m.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: m.content }]
+        })),
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        generationConfig: { temperature: state.settings.temperature }
+      })
+    });
+    
+    if (!response.ok) throw new Error('خطأ في Gemini API');
+    
+    const data = await response.json();
+    return data.candidates[0].content.parts[0].text;
   }
 }
 
-function deleteGoal(id) {
-  if (confirm('هل تريد حذف هذا الهدف؟')) {
-    state.goals = state.goals.filter(g => g.id !== id);
-    saveToStorage();
-    renderGoals();
-    showToast('🗑️ تم الحذف');
-  }
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
-// ===== MOOD =====
-function openMoodPicker(e) {
-  if (e) e.stopPropagation();
-  document.getElementById('tools-menu').classList.remove('open');
-  const menu = document.getElementById('mood-menu');
+function openToolsMenu(event) {
+  event.stopPropagation();
+  const menu = document.getElementById('tools-menu');
   menu.classList.toggle('open');
 }
 
-function selectMood(emoji, label, e) {
-  if (e) e.stopPropagation();
-  currentMood = { emoji, label };
-  document.getElementById('mood-menu').classList.remove('open');
-  document.getElementById('mood-indicator').textContent = emoji;
-  showToast(`${emoji} حالتك: ${label}`);
+function openMoodPicker(event) {
+  event.stopPropagation();
+  document.getElementById('tools-menu').classList.remove('open');
+  document.getElementById('mood-menu').classList.toggle('open');
 }
 
-function openToolsMenu() {
-  document.getElementById('tools-menu').classList.toggle('open');
+function selectMood(emoji, label, event) {
+  event.stopPropagation();
+  currentMood = { emoji, label };
+  document.getElementById('mood-indicator').textContent = emoji;
+  document.querySelectorAll('.mood-emoji-btn').forEach(b => b.classList.remove('selected'));
+  event.target.closest('.mood-emoji-btn').classList.add('selected');
+  document.getElementById('mood-menu').classList.remove('open');
+  
+  const input = document.getElementById('chat-input');
+  input.value = `(${label}) ${input.value}`;
+}
+
+function renderGoals() {
+  const goalsList = document.getElementById('goals-list');
+  
+  if (!state.goals || state.goals.length === 0) {
+    goalsList.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--text-dim);">
+      <div style="font-size:48px;margin-bottom:12px;">🎯</div>
+      <div style="font-size:15px;font-weight:300;">لا يوجد أهداف بعد<br>اضغط + لإضافة هدف جديد</div>
+    </div>`;
+    return;
+  }
+  
+  goalsList.innerHTML = state.goals.map((goal, i) => `
+    <div class="goal-item">
+      <div class="goal-check ${goal.done ? 'done' : ''}" onclick="toggleGoal(${i})">${goal.done ? '✓' : ''}</div>
+      <div class="goal-content">
+        <div class="goal-text ${goal.done ? 'done' : ''}">${escapeHtml(goal.text)}</div>
+        <div class="goal-date">${new Date(goal.createdAt).toLocaleDateString('ar')}</div>
+      </div>
+      <button class="goal-delete" onclick="deleteGoal(${i})">🗑️</button>
+    </div>
+  `).join('');
+  
+  document.getElementById('goals-count').textContent = state.goals.length + ' هدف';
+}
+
+function openAddGoal() {
+  const text = prompt('ما الهدف الجديد؟');
+  if (text) {
+    state.goals.push({
+      text,
+      done: false,
+      createdAt: new Date().toISOString()
+    });
+    saveToStorage();
+    renderGoals();
+  }
+}
+
+function toggleGoal(index) {
+  state.goals[index].done = !state.goals[index].done;
+  saveToStorage();
+  renderGoals();
+}
+
+function deleteGoal(index) {
+  if (confirm('هل أنت متأكد؟')) {
+    state.goals.splice(index, 1);
+    saveToStorage();
+    renderGoals();
+  }
 }
 
 document.addEventListener('click', () => {
@@ -1241,29 +1310,7 @@ document.addEventListener('click', () => {
   document.getElementById('mood-menu').classList.remove('open');
 });
 
-// ===== TOAST =====
-function showToast(msg) {
-  const toast = document.createElement('div');
-  toast.style.cssText = `
-    position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:12px;padding:12px 16px;font-size:14px;
-    z-index:999;animation:slideUp 0.3s ease;
-  `;
-  toast.textContent = msg;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 2000);
-}
-
-function switchSettingsTab(tab, btn) {
-  document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.settings-tab-content').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-}
-
-// ===== INIT =====
-window.addEventListener('DOMContentLoaded', init);
+init();
 </script>
 </body>
 </html>
